@@ -38,6 +38,13 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.87 0 0);
+  /* Shadow Journal – RGB triplets for rgba() in gradients/inline */
+  --sj-background-dark-rgb: 11, 0, 20;
+  --sj-surface-dark-rgb: 22, 16, 34;
+  --sj-brand-rgb: 108, 43, 238;
+  --sj-brand-glow-rgb: 45, 27, 78;
+  --sj-brand-deep-rgb: 26, 11, 46;
+  --sj-white-rgb: 255, 255, 255;
 }
 
 .dark {
@@ -100,6 +107,13 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  /* Shadow Journal landing */
+  --color-background-dark: #0b0014;
+  --color-background-dark-alt: #1a0b2e;
+  --color-surface-dark: #161022;
+  --color-brand: #6c2bee;
+  --color-brand-glow: #2d1b4e;
+  --color-brand-deep: #1a0b2e;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -121,6 +135,26 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Dark scrollbar to match Shadow Journal / dark pages */
+  html {
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+    scrollbar-width: thin;
+  }
+  html::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  html::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  html::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 9999px;
+  }
+  html::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.22);
   }
 
   :root {
@@ -147,5 +181,34 @@
 
   .shadow-inner-left {
     box-shadow: inset 9px 0 6px -1px rgb(0 0 0 / 0.02);
+  }
+
+  /* Shadow Journal landing */
+  .glass-panel {
+    background: rgba(var(--sj-surface-dark-rgb), 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(var(--sj-brand-rgb), 0.2);
+  }
+  .glow-text {
+    text-shadow: 0 0 20px rgba(var(--sj-brand-rgb), 0.5);
+  }
+  .glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .glass-card:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  .dashed-line-glow {
+    stroke: rgba(157, 141, 241, 0.6);
+    stroke-dasharray: 8 4;
+  }
+  @keyframes dash-flow {
+    to { stroke-dashoffset: -24; }
+  }
+  .animate-dash-flow {
+    animation: dash-flow 1s linear infinite;
   }
 }

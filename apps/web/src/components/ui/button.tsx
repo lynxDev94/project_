@@ -20,11 +20,19 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         brand: "bg-[#2F6868] hover:bg-[#2F6868]/90 border-[#2F6868] text-white",
+        // Shadow Journal landing
+        primary:
+          "rounded-full bg-brand text-white shadow-xl shadow-brand/20 transition-all hover:scale-105 hover:bg-brand/90 active:scale-95 focus-visible:ring-brand/50",
+        outlineDark:
+          "rounded-full border border-white/10 bg-white/5 text-white backdrop-blur-sm transition-all hover:bg-white/10 focus-visible:ring-white/20",
+        muted:
+          "rounded-lg bg-white/10 text-white transition-all hover:bg-white/20 focus-visible:ring-white/20",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
         sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
         lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        xl: "h-12 px-8 text-lg font-semibold has-[>svg]:px-6",
         icon: "size-9",
       },
     },

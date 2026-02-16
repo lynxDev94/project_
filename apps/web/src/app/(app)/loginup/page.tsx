@@ -1,0 +1,221 @@
+"use client";
+
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
+import { Label } from "@/components/ui/label";
+import { Brain, Mail, Lock, Sun, Gem } from "lucide-react";
+
+const SIGNUP_BG_IMAGE = "/images/signup-bg.png";
+
+export default function LoginUpPage() {
+  return (
+    <div className="fixed inset-0 flex min-h-screen overflow-y-auto font-sans">
+      {/* Left: Branding — full-height background image + overlay */}
+      <div className="relative hidden min-h-screen w-1/2 flex-col justify-between overflow-hidden lg:flex">
+        <div
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${SIGNUP_BG_IMAGE})` }}
+        />
+        <div
+          className="absolute inset-0 z-0"
+          style={{
+            background: `linear-gradient(180deg, rgba(var(--sj-background-dark-rgb), 0.85) 0%, rgba(var(--sj-background-dark-rgb), 0.75) 100%)`,
+          }}
+        />
+        <div className="relative z-10 flex flex-col justify-between p-12">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand">
+              <Brain className="h-4 w-4 text-white" />
+            </div>
+            <span className="font-sans text-xl font-bold tracking-tight text-slate-100">
+              Shadow<span className="text-brand">Journal</span>
+            </span>
+          </div>
+
+          <div className="space-y-6">
+            <h1 className="font-headline text-4xl font-bold leading-tight text-slate-100 xl:text-5xl">
+              <span className="font-medium">Begin your </span>
+              <span className="glow-text text-brand">Individuation.</span>
+            </h1>
+            <p className="max-w-md font-sans text-lg leading-relaxed text-slate-400">
+              Start your journey into the depths of the self. Integrate your
+              shadow, explore your psyche, and find wholeness through AI-guided
+              Jungian insights.
+            </p>
+
+            <div className="rounded-2xl border border-white/10 bg-white/5 px-6 py-5 backdrop-blur-sm">
+              <p className="font-sans text-xs font-bold uppercase tracking-[0.2em] text-slate-300">
+                Private & Encrypted
+              </p>
+              <p className="mt-3 max-w-xs font-sans text-sm leading-relaxed text-slate-400">
+                Your unconscious is yours alone. All entries are end-to-end
+                encrypted.
+              </p>
+            </div>
+
+            <div className="flex gap-6 font-sans text-sm text-slate-500">
+              <div className="flex items-center gap-2">
+                <Lock className="h-4 w-4" />
+                <span className="uppercase">Encrypted</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Gem className="h-4 w-4" />
+                <span className="uppercase">Private</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right: Signup form */}
+      <div className="relative flex w-full flex-col justify-between bg-surface-dark p-8 lg:w-1/2 lg:p-16">
+        <div className="absolute right-8 top-8 hidden lg:block">
+          <button
+            type="button"
+            className="rounded-full p-2 text-slate-400 transition-colors hover:text-slate-100"
+            aria-label="Toggle theme"
+          >
+            <Sun className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="mx-auto w-full max-w-md space-y-8">
+          <div className="space-y-2">
+            <h2 className="font-headline text-3xl font-bold text-slate-100 md:text-4xl">
+              Create an account
+            </h2>
+            <p className="font-sans text-slate-400">
+              Join thousands exploring the depths of their psyche.
+            </p>
+          </div>
+
+          <Button
+            type="button"
+            variant="outlineDark"
+            size="xl"
+            className="w-full justify-center gap-3"
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+            </svg>
+            Continue with Google
+          </Button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/10" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-surface-dark px-4 text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
+                Or continue with email
+              </span>
+            </div>
+          </div>
+
+          <form className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="firstName" className="font-sans text-slate-400">
+                  First Name
+                </Label>
+                <Input
+                  id="firstName"
+                  placeholder="Jung"
+                  className="rounded-xl border-white/10 bg-surface-dark font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-brand"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastName" className="font-sans text-slate-400">
+                  Last Name
+                </Label>
+                <Input
+                  id="lastName"
+                  placeholder="Smith"
+                  className="rounded-xl border-white/10 bg-surface-dark font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-brand"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email" className="font-sans text-slate-400">
+                Email Address
+              </Label>
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="name@example.com"
+                  className="rounded-xl border-white/10 bg-surface-dark pl-12 font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-brand"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password" className="font-sans text-slate-400">
+                Password
+              </Label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" />
+                <PasswordInput
+                  id="password"
+                  placeholder="••••••••"
+                  className="rounded-xl border-white/10 bg-surface-dark pl-12 font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-brand"
+                />
+              </div>
+            </div>
+
+            <label className="flex cursor-pointer items-start gap-3">
+              <input
+                type="checkbox"
+                className="mt-1 h-4 w-4 rounded border-white/20 bg-surface-dark text-brand focus:ring-brand"
+              />
+              <span className="font-sans text-sm text-slate-400">
+                I agree to the{" "}
+                <Link href="#" className="text-brand hover:underline">
+                  Terms of Service
+                </Link>{" "}
+                and{" "}
+                <Link href="#" className="text-brand hover:underline">
+                  Privacy Policy
+                </Link>
+                .
+              </span>
+            </label>
+
+            <Button type="submit" variant="primary" size="xl" className="w-full">
+              Create your account
+            </Button>
+          </form>
+
+          <p className="text-center font-sans text-slate-400">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="font-medium text-brand hover:underline"
+            >
+              Sign in
+            </Link>
+          </p>
+        </div>
+
+        <div className="mt-12 flex flex-col items-end gap-1 text-right font-sans text-[11px] uppercase tracking-wider text-slate-500">
+          <div className="flex items-center gap-2">
+            <Link href="#" className="hover:text-slate-400">
+              Privacy Policy
+            </Link>
+            <span>•</span>
+            <Link href="#" className="hover:text-slate-400">
+              Terms of Service
+            </Link>
+          </div>
+          <p>© 2024 Shadow Journal Lab. For personal growth purposes only. Not a substitute for medical therapy.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
