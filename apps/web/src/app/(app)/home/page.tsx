@@ -965,18 +965,11 @@ function Footer() {
               </span>
             </div>
             <p className="mb-6 max-w-sm text-slate-500">
-              Shadow Journal is an ethical tech lab dedicated to the
+              Shadow Journal is a Jungian journal dedicated to the
               democratization of depth psychology tools. We believe everyone
-              deserves a mirror.
+              deserves a mirror to help them understand themselves better.
             </p>
             <div className="flex gap-4">
-              <a
-                href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 transition-colors hover:bg-brand/20"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img alt="Twitter" className="h-4 w-4 invert opacity-60" src={IMG_TWITTER} />
-              </a>
               <a
                 href="#"
                 className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 transition-colors hover:bg-brand/20"
@@ -995,12 +988,7 @@ function Footer() {
               </li>
               <li>
                 <Link href="#" className="transition-colors hover:text-brand">
-                  AI Ethics
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="transition-colors hover:text-brand">
-                  Security
+                  Safety
                 </Link>
               </li>
               <li>
@@ -1020,17 +1008,7 @@ function Footer() {
               </li>
               <li>
                 <Link href="#" className="transition-colors hover:text-brand">
-                  Psychology Board
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="transition-colors hover:text-brand">
                   Contact
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="transition-colors hover:text-brand">
-                  Legal
                 </Link>
               </li>
             </ul>
@@ -1038,7 +1016,7 @@ function Footer() {
         </div>
         <div className="flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 text-xs text-slate-600 md:flex-row">
           <p>
-            © 2024 Shadow Journal Lab. For personal growth purposes only. Not a
+            © 2026 Shadow Journal. For personal growth purposes only. Not a
             substitute for medical therapy.
           </p>
           <div className="flex gap-6">

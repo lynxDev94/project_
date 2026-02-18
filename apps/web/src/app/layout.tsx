@@ -20,8 +20,11 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Agent Chat",
-  description: "Agent Chat UX by LangChain",
+  title: "Shadow Journal",
+  description: "Shadow Journal — AI-guided Jungian insights for depth psychology and self-integration",
+  icons: {
+    icon: "/images/brandLogo.png",
+  },
 };
 
 export default function RootLayout({
