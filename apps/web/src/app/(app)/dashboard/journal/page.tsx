@@ -1,15 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
-  Brain,
-  Lock,
   List,
   ImageIcon,
   Maximize2,
@@ -32,7 +27,6 @@ export default function JournalPage() {
   );
   const [tags, setTags] = useState(SAMPLE_TAGS);
   const [newTag, setNewTag] = useState("");
-  const [privateEntry, setPrivateEntry] = useState(true);
   const [resonance, setResonance] = useState(35);
   const wordCount = body.split(/\s+/).filter(Boolean).length;
 
@@ -54,62 +48,7 @@ export default function JournalPage() {
   };
 
   return (
-    <div className="min-h-screen bg-dashboard-main-bg font-sans text-slate-800">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-dashboard-stroke bg-dashboard-sidebar-bg">
-        <div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-6">
-          <div className="flex items-center gap-8">
-            <Link href="/dashboard" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand">
-                <Brain className="h-4 w-4 text-white" />
-              </div>
-              <span className="font-sans text-lg font-bold tracking-tight text-slate-800">
-                Shadow<span className="text-brand">Journal</span>
-              </span>
-            </Link>
-            <nav className="hidden items-center gap-1 md:flex">
-              <Link
-                href="/dashboard"
-                className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-800"
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/journal"
-                className="rounded-lg px-3 py-2 text-sm font-medium text-brand"
-              >
-                Journal
-              </Link>
-              <Link
-                href="#"
-                className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-800"
-              >
-                Archive
-              </Link>
-            </nav>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Lock className="h-4 w-4 text-slate-500" />
-              <span className="text-sm font-medium text-slate-600">
-                Private Entry
-              </span>
-              <Switch
-                checked={privateEntry}
-                onCheckedChange={setPrivateEntry}
-                className="data-[state=checked]:bg-brand"
-              />
-            </div>
-            <Avatar className="h-8 w-8">
-              <AvatarFallback className="bg-slate-200 text-sm font-medium text-slate-600">
-                AC
-              </AvatarFallback>
-            </Avatar>
-          </div>
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-4xl px-6 py-8">
+    <div className="mx-auto max-w-4xl font-sans text-slate-800">
         {/* Emotional Resonance slider */}
         <div className="mb-8">
           <p className="mb-2 text-center text-sm font-semibold text-brand">
@@ -258,7 +197,6 @@ export default function JournalPage() {
             </div>
           </div>
         </div>
-      </main>
     </div>
   );
 }

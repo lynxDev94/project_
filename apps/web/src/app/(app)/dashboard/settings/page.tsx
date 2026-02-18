@@ -6,26 +6,7 @@ import { Trash2, UserX, BookOpen } from "lucide-react";
 
 export default function SettingsPage() {
   return (
-    <div className="min-h-screen bg-dashboard-main-bg font-sans text-slate-800">
-      {/* Header */}
-      <header className="border-b border-dashboard-stroke bg-dashboard-sidebar-bg">
-        <div className="mx-auto flex h-14 max-w-3xl items-center justify-end gap-6 px-6">
-          <Link
-            href="/dashboard"
-            className="text-sm font-medium text-slate-500 hover:text-slate-800"
-          >
-            Dashboard
-          </Link>
-          <Link
-            href="/dashboard"
-            className="text-sm font-medium text-brand"
-          >
-            Journal
-          </Link>
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-3xl px-6 py-10">
+    <div className="mx-auto max-w-3xl font-sans text-slate-800">
         <h1 className="mb-2 font-headline text-3xl font-bold text-slate-800">
           Settings
         </h1>
@@ -93,7 +74,6 @@ export default function SettingsPage() {
             </Button>
           </Link>
         </div>
-      </main>
     </div>
   );
 }
