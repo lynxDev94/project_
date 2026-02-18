@@ -19,7 +19,7 @@ import { useAuthContext } from "@/providers/Auth";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { googleAuthDisabled } from "@/lib/utils";
 
-export default function SigninInterface() {
+export default function SigninInterfaces() {
   const { signIn, signInWithGoogle, isAuthenticated } = useAuthContext();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -50,7 +50,7 @@ export default function SigninInterface() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      router.push("/");
+      router.push("/dashboard");
     }
   }, [isAuthenticated, router]);
 

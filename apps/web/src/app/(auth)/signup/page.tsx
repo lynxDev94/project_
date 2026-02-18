@@ -1,6 +1,6 @@
 "use client";
 
-import SignupInterface from "@/features/signup";
+import SignupInterface from "@/app/(app)/signupInterface/page";
 
 export default function SignupPage() {
   return <SignupInterface />;

@@ -1,6 +1,6 @@
 "use client";
 
-import SigninInterface from "@/features/signin";
+import SigninInterface from "@/app/(app)/signinInterface/page";
 
 export default function SigninPage() {
   return <SigninInterface />;

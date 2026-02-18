@@ -42,7 +42,7 @@ const signupSchema = z
 
 type SignupFormValues = z.infer<typeof signupSchema>;
 
-export default function SignupInterface() {
+export default function SignupInterfaces() {
   const { signUp, signInWithGoogle } = useAuthContext();
   const router = useRouter();
 

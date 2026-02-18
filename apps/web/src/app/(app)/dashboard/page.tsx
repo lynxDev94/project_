@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuthContext } from "@/providers/Auth";
 import {
   Brain,
   Plus,
@@ -19,6 +21,7 @@ import {
   BookOpen,
   LineChart,
   ArrowRight,
+  LogOut,
 } from "lucide-react";
 
 const RECENT_ENTRIES = [
@@ -135,6 +138,14 @@ function MoodTrendChart({
 }
 
 export default function DashboardPage() {
+  const router = useRouter();
+  const { signOut } = useAuthContext();
+
+  const handleLogout = async () => {
+    await signOut();
+    router.push("/");
+  };
+
   return (
     <div className="min-h-screen bg-dashboard-main-bg font-sans text-slate-800">
       <div className="flex min-h-screen">
@@ -154,14 +165,16 @@ export default function DashboardPage() {
             </div>
           </Link>
 
-          <Button
-            variant="primary"
-            size="lg"
-            className="mb-8 w-full justify-center gap-2 rounded-xl"
-          >
-            <Plus className="h-5 w-5" />
-            New Reflection
-          </Button>
+          <Link href="/journal">
+            <Button
+              variant="primary"
+              size="lg"
+              className="mb-8 w-full justify-center gap-2 rounded-xl"
+            >
+              <Plus className="h-5 w-5" />
+              New Reflection
+            </Button>
+          </Link>
 
           <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
             Recent entries
@@ -211,14 +224,7 @@ export default function DashboardPage() {
               <span className="text-slate-800">Dashboard</span>
             </nav>
             <div className="flex items-center gap-3">
-              <button
-                type="button"
-                className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
-                aria-label="Settings"
-              >
-                <Settings className="h-5 w-5" />
-              </button>
-              <div className="flex items-center gap-3 rounded-full border border-dashboard-stroke bg-white px-3 py-2 shadow-card-layered">
+            <div className="flex items-center gap-3 rounded-full border border-dashboard-stroke bg-white px-3 py-2 shadow-card-layered">
                 <Avatar className="h-8 w-8 rounded-full border border-white shadow-sm">
                   <AvatarImage src="" alt="Alex Chen" />
                   <AvatarFallback className="bg-gradient-to-br from-emerald-200 to-emerald-500 text-sm font-semibold text-emerald-900">
@@ -229,6 +235,21 @@ export default function DashboardPage() {
                   Alex Chen
                 </span>
               </div>
+              <Link
+                href="/settings"
+                className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                aria-label="Settings"
+              >
+                <Settings className="h-5 w-5" />
+              </Link>
+              <button
+                type="button"
+                className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                aria-label="Log out"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-5 w-5 hover:text-red-600" />
+              </button>
             </div>
           </header>
 
@@ -330,30 +351,38 @@ export default function DashboardPage() {
         {/* Right sidebar */}
         <aside className="flex w-72 flex-col gap-6 border-l border-dashboard-stroke bg-dashboard-panel py-8 pl-6 pr-8">
           {/* Weekly Streak */}
-          <div>
-            <h2 className="mb-4 font-sans text-sm font-bold text-slate-800">
-              Weekly Streak
-            </h2>
-            <div className="mb-3 inline-block rounded-lg bg-brand/15 px-3 py-1.5 text-sm font-semibold text-brand">
-              5 Days
+          <div className="min-w-0 overflow-hidden rounded-2xl border border-dashboard-stroke bg-white px-4 py-5 shadow-card-layered">
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <h2 className="shrink-0 font-sans text-sm font-bold text-slate-900">
+                Weekly Streak
+              </h2>
+              <span className="shrink-0 rounded-full bg-brand/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-brand">
+                5 days
+              </span>
             </div>
-            <div className="flex gap-2">
-              {WEEKDAYS.map((day, i) => (
-                <div
-                  key={day + i}
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-medium ${
-                    STREAK_FILLED[i]
-                      ? "bg-brand text-white"
-                      : "bg-slate-200 text-slate-500"
-                  }`}
-                >
-                  {STREAK_FILLED[i] ? (
-                    <Check className="h-4 w-4" />
-                  ) : (
-                    day
-                  )}
-                </div>
-              ))}
+            <div className="grid grid-cols-7 grid-rows-[auto_auto] gap-x-1 gap-y-1">
+              {WEEKDAYS.map((day, i) => {
+                const filled = STREAK_FILLED[i];
+                return (
+                  <div
+                    key={day + i}
+                    className="flex flex-col items-center gap-1"
+                  >
+                    <div
+                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-medium ${
+                        filled
+                          ? "bg-brand text-white"
+                          : "border border-slate-200 bg-slate-50 text-slate-400"
+                      }`}
+                    >
+                      {filled ? <Check className="h-3 w-3" /> : day}
+                    </div>
+                    <span className="truncate text-[10px] font-medium text-slate-500">
+                      {day}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

@@ -5,11 +5,101 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
-import { Brain, Mail, Lock } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAuthContext } from "@/providers/Auth";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const LOGIN_BG_IMAGE = "/images/login-bg.png";
 
-export default function LoginPage() {
+export default function SigninInterface() {
+  const { signIn, signInWithGoogle, isAuthenticated } = useAuthContext();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [showManualRedirect, setShowManualRedirect] = useState<boolean>(false);
+
+  // Handle URL parameters
+  useEffect(() => {
+    // Check for message parameter
+    const urlMessage = searchParams.get("message");
+    if (urlMessage) {
+      setMessage(urlMessage);
+    }
+
+    // Check for error parameter
+    const urlError = searchParams.get("error");
+    if (urlError) {
+      setError(urlError);
+    }
+  }, [searchParams]);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated, router]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!email || !password) {
+      setError("Please enter both email and password");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const result = await signIn({
+        email,
+        password,
+      });
+
+      if (result.error) {
+        setError(result.error.message);
+        return;
+      }
+
+      // Show success message and set up manual redirect timer
+      setIsSuccess(true);
+
+      // Set a timer to show manual redirect button after 5 seconds
+      setTimeout(() => {
+        setShowManualRedirect(true);
+      }, 5000);
+    } catch (err) {
+      console.error("Sign in error:", err);
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    const { error } = await signInWithGoogle();
+    if (error) {
+      setIsLoading(false);
+      setError(error.message);
+
+      return;
+    }
+
+  }
+
+  // keep isLoading: true, as we're doing a redirect
   return (
     <div className="fixed inset-0 flex min-h-screen overflow-y-auto font-sans">
       {/* Left: Branding — full-height background image + overlay */}
@@ -25,14 +115,17 @@ export default function LoginPage() {
           }}
         />
         <div className="relative z-10 flex flex-col justify-between p-12">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand">
-              <Brain className="h-4 w-4 text-white" />
-            </div>
+          <Link href="/" className="flex items-center gap-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/brandLogo.png"
+              alt="Shadow Journal"
+              className="h-8 w-8 object-contain rounded-full"
+            />
             <span className="font-sans text-xl font-bold tracking-tight text-slate-100">
               Shadow<span className="text-brand">Journal</span>
             </span>
-          </div>
+          </Link>
 
           <div className="space-y-6">
             <h1 className="font-headline text-4xl font-bold leading-tight text-slate-100 xl:text-5xl">
@@ -63,8 +156,13 @@ export default function LoginPage() {
             <p className="font-sans text-slate-400">
               Continue your path to individuation.
             </p>
+            {message && !isSuccess && (
+              <Alert className="mb-4 bg-blue-50 text-blue-800">
+                <AlertDescription>{message}</AlertDescription>
+              </Alert>
+            )}
           </div>
-
+          {/* 
           <Button
             type="button"
             variant="outlineDark"
@@ -78,7 +176,7 @@ export default function LoginPage() {
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
             </svg>
             Continue with Google
-          </Button>
+          </Button> */}
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -86,12 +184,31 @@ export default function LoginPage() {
             </div>
             <div className="relative flex justify-center">
               <span className="bg-surface-dark px-4 text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
-                Or continue with email
+                Continue with email
               </span>
             </div>
           </div>
 
-          <form className="space-y-6">
+
+          {isSuccess && (
+            <Alert className="mb-4 border-green-200 bg-green-50 text-green-800">
+              <AlertDescription className="flex flex-col gap-2">
+                <span>Success! We're redirecting you to the dashboard...</span>
+                {showManualRedirect && (
+                  <Button
+                    onClick={() => router.push("/dashboard")}
+                    variant="outline"
+                    className="mt-2 border-green-300 text-green-700 hover:bg-green-100"
+                  >
+                    Go to Dashboard Now
+                  </Button>
+                )}
+              </AlertDescription>
+            </Alert>
+          )}
+
+
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <Label htmlFor="email" className="text-slate-400">
                 Email Address
@@ -101,8 +218,11 @@ export default function LoginPage() {
                 <Input
                   id="email"
                   type="email"
-                placeholder="name@example.com"
-                className="rounded-xl border-white/10 bg-surface-dark pl-12 text-slate-100 placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-brand"
+                  placeholder="name@example.com"
+                  className="rounded-xl border-white/10 bg-surface-dark pl-12 text-slate-100 placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-brand"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </div>
             </div>
@@ -120,17 +240,31 @@ export default function LoginPage() {
                 </Link>
               </div>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" />
+                <Lock className="absolute z-10 left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" />
                 <PasswordInput
                   id="password"
-                placeholder="••••••••"
-                className="rounded-xl border-white/10 bg-surface-dark pl-12 text-slate-100 placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-brand"
+                  placeholder="Enter your password"
+                  value={password}
+                  className="rounded-xl border-white/10 bg-surface-dark pl-12 text-slate-100 placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-brand"
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
+                
               </div>
             </div>
 
-            <Button type="submit" variant="primary" size="xl" className="w-full">
-              Face your shadow
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            <Button type="submit" variant="primary" size="xl" className="w-full" disabled={isLoading || isSuccess}>
+            {isLoading
+                ? "Signing in..."
+                : isSuccess
+                  ? "Signed In Successfully"
+                  : "Sign In"}
             </Button>
           </form>
 

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Brain, Mail, Lock, Check, ArrowRight, ArrowLeft } from "lucide-react";
+import { Mail, Lock, Check, ArrowRight, ArrowLeft } from "lucide-react";
 
 export default function ForgotPasswordPage() {
   return (
@@ -24,9 +24,12 @@ export default function ForgotPasswordPage() {
           href="/login"
           className="mb-10 flex items-center gap-2 transition-opacity hover:opacity-90"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand">
-            <Brain className="h-5 w-5 text-white" />
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/brandLogo.png"
+            alt="Shadow Journal"
+            className="h-9 w-9 object-contain rounded-full"
+          />
           <span className="font-sans text-xl font-bold tracking-tight text-slate-100">
             Shadow<span className="text-brand">Journal</span>
           </span>
@@ -73,7 +76,7 @@ export default function ForgotPasswordPage() {
 
           <p className="mt-6 text-center">
             <Link
-              href="/login"
+              href="/signin"
               className="inline-flex items-center gap-2 text-sm font-medium text-brand hover:underline"
             >
               <ArrowLeft className="h-4 w-4" />

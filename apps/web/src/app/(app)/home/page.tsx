@@ -4,8 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import {
-  Brain,
   ArrowRight,
   Eye,
   Settings,
@@ -18,7 +18,10 @@ import {
   Repeat,
   Flame,
   Lightbulb,
+  Heart,
   ChevronDown,
+  Moon,
+  VenetianMask
 } from "lucide-react";
 
 const LOGO_WIRED =
@@ -41,11 +44,14 @@ function Nav() {
     <nav className="fixed left-0 right-0 top-0 z-50 border-b border-white/5 bg-background-dark/80 backdrop-blur-md">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
         <Link href="/home" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand">
-            <Brain className="h-4 w-4 text-white" />
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/brandLogo.png"
+            alt="Shadow Journal"
+            className="h-8 w-8 object-contain rounded-full"
+          />
           <span className="font-sans text-xl font-bold tracking-tight">
-            Shadow<span className="text-brand">Journal</span>
+          <span className="text-brand"> Shadow</span><span className="text-white font-extralight">Journal</span>
           </span>
         </Link>
         <div className="hidden items-center gap-8 text-sm font-medium text-slate-400 md:flex">
@@ -60,8 +66,8 @@ function Nav() {
           </Link>
           <div className="flex items-center gap-3">
             <Link
-              href="/login"
-              className="rounded-full border border-brand/20 bg-brand/10 px-5 py-2 text-brand transition-all hover:bg-brand/20"
+              href="/signin"
+              className="rounded-full border border-brand/20 bg-brand/10 px-5 py-2 text-white transition-all hover:bg-brand/20"
             >
               Log In
             </Link>
@@ -207,22 +213,20 @@ function Hero() {
         </motion.div> */}
         <h1 className="mb-8 font-sans text-5xl font-extralight leading-[1.25] tracking-tight md:text-7xl">
           <motion.span className="block" variants={heroItem}>
-            Meet the version of you that you&apos;ve
+          Meet the version of you
           </motion.span>
           <motion.span
             className="glow-text block font-bold bg-gradient-to-r from-brand via-white to-brand/80 bg-clip-text text-transparent"
             variants={heroItem}
           >
-            been hiding from.
+            you've been hiding
           </motion.span>
         </h1>
         <motion.p
           className="mx-auto mb-12 max-w-2xl text-lg leading-relaxed text-slate-400 md:text-xl"
           variants={heroItem}
         >
-          Unlock the wisdom of your subconscious. Shadow Journal combines Jungian
-          depth psychology with ethical AI to help you integrate your hidden
-          parts.
+         Write privately. Get AI-guided Jungian reflections to support shadow integration.
         </motion.p>
         <motion.div
           className="mb-8 w-full max-w-[200px] md:max-w-[280px]"
@@ -243,7 +247,7 @@ function Hero() {
             </Button>
           </Link>
           <Button variant="outlineDark" size="xl">
-            View the Science
+          How It Works
           </Button>
         </motion.div>
       </motion.div>
@@ -256,17 +260,68 @@ function TrustBar() {
     <div className="relative z-10 border-y border-white/5 bg-background-dark/50 backdrop-blur-sm">
       <div className="mx-auto max-w-7xl px-6 py-10">
         <p className="mb-8 text-center text-xs font-semibold uppercase tracking-widest text-slate-500">
-          Pioneering Internal Integration For
+        Everything You Need for Inner Work
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-12 opacity-40 grayscale contrast-125 md:gap-20">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img alt="Wired" className="h-5 invert" src={LOGO_WIRED} />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img alt="NYT" className="h-6 invert" src={LOGO_NYT} />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img alt="Fortune" className="h-5 invert" src={LOGO_FORTUNE} />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img alt="Fast Co" className="h-5 invert" src={LOGO_FASTCO} />
+        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
+          {[
+            {
+              label: "Privacy",
+              icon: Lock,
+              emoji: "🔒",
+              desc: "Private by design. Your entries stay yours.",
+            },
+            {
+              label: "AI Insights",
+              icon: Sparkles,
+              emoji: "🧠",
+              desc: "Get emotional patterns, summaries, and blind spots.",
+            },
+            {
+              label: "Shadow Work",
+              icon: Moon,
+              emoji: "🌓",
+              desc: "Explore suppressed emotions and repeating triggers safely.",
+            },
+            {
+              label: "Archetypes",
+              icon: VenetianMask,
+              emoji: "🎭",
+              desc: "Detect Jungian archetypes and inner roles shaping your behavior.",
+            },
+            {
+              label: "Prompts",
+              icon: Lightbulb,
+              emoji: "✍️",
+              desc: "Get guided prompts when you don’t know what to write.",
+            },
+          ].map((item) => {
+            const Icon = item.icon;
+            return (
+              <Tooltip key={item.label}>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-100 shadow-card-layered transition-transform transition-colors hover:-translate-y-0.5 hover:border-brand/50 hover:bg-brand/20"
+                    aria-label={item.label}
+                  >
+                    <Icon className="h-6 w-6" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="top"
+                  sideOffset={8}
+                  className="bg-slate-900 text-slate-50 border border-white/10"
+                >
+                  <p className="mb-1 text-xs font-semibold">
+                    {item.emoji} {item.label}
+                  </p>
+                  <p className="max-w-xs text-[11px] text-slate-100/90">
+                    {item.desc}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -276,19 +331,19 @@ function TrustBar() {
 function UnseenBurden() {
   const cards = [
     {
-      icon: Repeat,
-      title: "Recurring Patterns",
-      desc: "Do you find yourself in the same relationship dynamics or work conflicts, despite promising \"never again\"? A part of you keeps choosing the same outcome because it hasn't been heard.",
+      icon: Moon,
+      title: "Shadow Work",
+      desc: "Explore the thoughts you avoid, the emotions you suppress, and the patterns you repeat, without feeling overwhelmed.",
     },
     {
-      icon: Flame,
-      title: "Emotional Reactivity",
-      desc: "Strong reactions—rage, envy, shame—often point to disowned shadow material demanding attention. What triggers you is a clue to what you've hidden away.",
+      icon: VenetianMask,
+      title: "Jungian Archetypes",
+      desc: "The AI detects archetypes in your writing - like The Shadow, The Child, The Hero, or The Lover, and shows what they reveal about you."
     },
     {
       icon: Lightbulb,
-      title: "Stifled Potential",
-      desc: "Your greatest strengths can live in the shadow too. What you disown limits what you can become. The qualities you admire in others often reflect what you've yet to claim in yourself.",
+      title: "Self-Reflection With AI Insights",
+      desc: "Turn journal entries into clarity. Get summaries, emotional patterns, and questions that help you think deeper.",
     },
   ];
 
@@ -297,11 +352,11 @@ function UnseenBurden() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-16 text-center">
           <h2 className="mb-4 font-headline text-3xl font-bold text-slate-100 md:text-4xl">
-            The Unseen Burden
+          AI Journaling for Shadow Work & Self-Discovery
           </h2>
           <p className="mx-auto max-w-2xl text-center text-lg text-slate-400">
-            The shadow isn&apos;t evil—it&apos;s just unlit. When ignored, it
-            drives your behavior from the dark.
+          Write like a normal journal - but get deeper insights. <br/>
+          {/* Discover emotional patterns, hidden beliefs, and Jungian archetypes through guided prompts and AI analysis. */}
           </p>
         </div>
         <div className="grid gap-8 md:grid-cols-3">
@@ -434,43 +489,37 @@ function Journey() {
         <div className="grid gap-20 md:grid-cols-2">
           <div>
             <h2 className="mb-8 font-headline text-4xl font-light md:text-5xl">
-              The Alchemy of <br />
-              <span className="font-bold">Transformation</span>
+            The Process
             </h2>
             <p className="mb-12 text-lg text-slate-400">
-              Jung believed that &quot;one does not become enlightened by
-              imagining figures of light, but by making the darkness
-              conscious.&quot; Our methodology follows this sacred path.
+            Write honestly. Track your patterns. Let AI help you see what you can’t.
             </p>
             <div className="relative space-y-24 border-l border-brand/20 pl-8">
               <div className="absolute -left-px top-0 h-full w-0.5 bg-gradient-to-b from-brand via-brand/50 to-transparent" />
               <div className="relative">
                 <div className="absolute -left-[41px] top-0 flex h-6 w-6 items-center justify-center rounded-full border-4 border-brand bg-background-dark shadow-[0_0_15px_rgba(var(--sj-brand-rgb),0.5)]" />
-                <h3 className="mb-3 font-sans text-2xl font-bold text-slate-100">Voice your depths</h3>
+                <h3 className="mb-3 font-sans text-2xl font-bold text-slate-100">Start With a Quick Check-In</h3>
                 <p className="text-slate-400">
-                  Speak or write without filter. Our interface is designed to
-                  reduce the &quot;inner critic,&quot; allowing raw
-                  stream-of-consciousness to flow onto the digital canvas.
+                Answer a few questions about your goals, emotions, and what you want to work on.
+                We personalize prompts and archetype insights based on your focus.
                 </p>
               </div>
               <div className="relative">
                 <div className="absolute -left-[41px] top-0 flex h-6 w-6 items-center justify-center rounded-full border-4 border-brand/40 bg-background-dark" />
                 <h3 className="mb-3 font-sans text-2xl font-bold text-slate-100">
-                  AI Mirrors your shadow
+                Journal Freely, Track Your Growth
                 </h3>
                 <p className="text-slate-400">
-                  Our proprietary LLM, trained on Jungian texts, identifies
-                  recurring symbols, linguistic patterns, and emotional blind
-                  spots you might be avoiding.
+                Write entries in your private space and watch your progress over time.
+                Your dashboard keeps everything organized - moods, themes, and consistency.
                 </p>
               </div>
               <div className="relative">
                 <div className="absolute -left-[41px] top-0 flex h-6 w-6 items-center justify-center rounded-full border-4 border-brand/20 bg-background-dark" />
-                <h3 className="mb-3 font-sans text-2xl font-bold text-slate-100">Integrate the gold</h3>
+                <h3 className="mb-3 font-sans text-2xl font-bold text-slate-100">Get Jungian Insights & Archetype Analysis</h3>
                 <p className="text-slate-400">
-                  Turn insights into action. We provide tailored integration
-                  exercises designed to weave your newly discovered strengths
-                  into your daily persona.
+                Let AI analyze your writing for emotional patterns, recurring themes, and Jungian archetypes.
+                Receive reflections, blind spots, and prompts to go deeper.
                 </p>
               </div>
             </div>
@@ -485,7 +534,7 @@ function Journey() {
               />
               <div className="absolute bottom-4 left-4 rounded-xl border border-white/10 bg-white/5 px-6 py-4 backdrop-blur-xl">
                 <p className="font-headline text-3xl font-bold italic text-brand">
-                  &quot;Heal.&quot;
+                  &quot;Grow.&quot;
                 </p>
                 <p className="text-xs uppercase tracking-widest text-slate-400">
                   The Ultimate Goal
@@ -506,37 +555,52 @@ function Privacy() {
         <div className="grid gap-16 md:grid-cols-2 md:items-center">
           <div>
             <span className="mb-3 block text-xs font-bold uppercase tracking-widest text-brand">
-              Private by Design
+            Built for Privacy
             </span>
             <h2 className="mb-6 font-headline text-3xl font-light md:text-4xl">
-              Your Shadows Stay Yours.
+              Your Thoughts Stay Private
             </h2>
             <p className="mb-8 text-lg text-slate-400">
-              We believe your unconscious belongs to you. Local-first storage and
-              end-to-end encryption ensure that what you explore stays between
-              you and your journal.
+            Your journal is personal - it should stay that way.
+            We use secure authentication, encrypted connections, and privacy-first design so your entries stay protected and under your control.
             </p>
             <ul className="space-y-4">
               <li className="flex gap-3">
                 <Lock className="mt-0.5 h-5 w-5 shrink-0 text-brand" />
                 <div>
-                  <h4 className="font-sans font-bold text-slate-100">End-to-End Encryption</h4>
-                  <p className="text-sm text-slate-400">Entries are encrypted before they leave your device.</p>
+                  <h4 className="font-sans font-bold text-slate-100">Encrypted Connection (HTTPS)</h4>
+                  <p className="text-sm text-slate-400">Your entries are protected while being sent and saved.</p>
                 </div>
               </li>
               <li className="flex gap-3">
                 <Shield className="mt-0.5 h-5 w-5 shrink-0 text-brand" />
                 <div>
-                  <h4 className="font-sans font-bold text-slate-100">Local-First Storage</h4>
-                  <p className="text-sm text-slate-400">Your data lives with you first. Sync is optional.</p>
+                  <h4 className="font-sans font-bold text-slate-100">Private Access Only</h4>
+                  <p className="text-sm text-slate-400">Only you can view your entries — protected by secure authentication.</p>
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <Shield className="mt-0.5 h-5 w-5 shrink-0 text-brand" />
+                <div>
+                  <h4 className="font-sans font-bold text-slate-100">Delete Anytime</h4>
+                  <p className="text-sm text-slate-400">You can delete entries or your account whenever you want.</p>
                 </div>
               </li>
             </ul>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-12 text-center backdrop-blur-sm">
-            <Shield className="mx-auto mb-4 h-16 w-16 text-brand" />
-            <p className="mb-2 font-sans text-xl font-bold text-slate-100">Verified Secure</p>
-            <p className="text-xs uppercase tracking-widest text-slate-500">Last security audit: Q4 2024</p>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center backdrop-blur-sm">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/privacy.png"
+              alt="Locked journal on a desk"
+              className="mx-auto mb-4 h-24 w-auto rounded-xl object-cover"
+            />
+            <p className="mb-2 font-sans text-sm font-semibold text-slate-100">
+              Private by Design
+            </p>
+            <p className="text-xs text-slate-500">
+              Your entries stay encrypted and in your control.
+            </p>
           </div>
         </div>
       </div>
@@ -890,9 +954,12 @@ function Footer() {
         <div className="mb-16 grid gap-12 md:grid-cols-4">
           <div className="col-span-2">
             <div className="mb-6 flex items-center gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-brand">
-                <Brain className="h-3 w-3 text-white" />
-              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/brandLogo.png"
+                alt="Shadow Journal"
+                className="h-6 w-6 object-contain rounded-full"
+              />
               <span className="font-sans text-lg font-bold tracking-tight">
                 Shadow<span className="text-brand">Journal</span>
               </span>
@@ -988,7 +1055,7 @@ function Footer() {
   );
 }
 
-export default function HomePage() {
+export default function Home() {
   return (
     <div className="fixed inset-0 overflow-y-auto bg-background-dark font-sans text-slate-100">
       <Nav />
