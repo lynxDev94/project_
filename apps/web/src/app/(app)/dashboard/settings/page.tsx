@@ -17,8 +17,8 @@ export default function SettingsPage() {
         {/* Remove journal data */}
         <div className="mb-6 rounded-2xl border border-dashboard-stroke bg-white p-6 shadow-card-layered">
           <div className="flex items-start gap-4">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100">
-              <BookOpen className="h-5 w-5 text-amber-600" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
+              <BookOpen className="h-5 w-5" />
             </div>
             <div className="min-w-0 flex-1">
               <h2 className="font-sans text-lg font-semibold text-slate-800">
@@ -43,8 +43,8 @@ export default function SettingsPage() {
         {/* Remove account */}
         <div className="mb-10 rounded-2xl border border-dashboard-stroke bg-white p-6 shadow-card-layered">
           <div className="flex items-start gap-4">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-100">
-              <UserX className="h-5 w-5 text-red-600" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
+              <UserX className="h-5 w-5" />
             </div>
             <div className="min-w-0 flex-1">
               <h2 className="font-sans text-lg font-semibold text-slate-800">

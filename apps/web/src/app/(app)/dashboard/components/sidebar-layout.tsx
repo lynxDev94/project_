@@ -43,7 +43,7 @@ function SidebarNav({ pathname }: { pathname: string }) {
   };
 
   return (
-    <div className="flex h-full flex-col bg-dashboard-sidebar-bg">
+    <div className="flex h-full flex-col bg-[#F8F9FE]">
       <Link href="/dashboard" className="mb-8 flex items-center gap-2 px-6 pt-6">
         <Image
           src="/images/brandLogo.png"
@@ -71,7 +71,7 @@ function SidebarNav({ pathname }: { pathname: string }) {
               className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
                 active
                   ? "bg-brand/10 text-brand"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-800"
+                  : "text-slate-600 hover:bg-brand/5 hover:text-brand"
               }`}
             >
               <Icon className="h-4 w-4" />
@@ -85,7 +85,7 @@ function SidebarNav({ pathname }: { pathname: string }) {
         <button
           type="button"
           onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-800"
+          className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-brand/5 hover:text-brand"
         >
           <LogOut className="h-4 w-4" />
           Log out

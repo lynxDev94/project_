@@ -205,7 +205,7 @@ export default function DashboardPage() {
       <div className="grid gap-6 sm:grid-cols-3">
         <div className="rounded-2xl border border-dashboard-stroke bg-white p-4 shadow-card-layered">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
               <FileText className="h-5 w-5" />
             </div>
             <div>
@@ -227,7 +227,7 @@ export default function DashboardPage() {
         </div>
         <div className="rounded-2xl border border-dashboard-stroke bg-white p-4 shadow-card-layered">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
               <Calendar className="h-5 w-5" />
             </div>
             <div>

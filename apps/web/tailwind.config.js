@@ -69,8 +69,8 @@ module.exports = {
         "dashboard-bg": "#ffffff",
         "dashboard-panel": "#f8fafc",
         "dashboard-border": "#e2e8f0",
-        "dashboard-sidebar-bg": "#FDFDFF",
-        "dashboard-main-bg": "#F8F9FE",
+        "dashboard-sidebar-bg": "#FFFFFF",
+        "dashboard-main-bg": "#EEF0F7",
         "dashboard-stroke": "#E6E8F2",
       },
       boxShadow: {
