@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   BookOpenText,
+  FileText,
   Settings,
   Menu,
   LogOut,
@@ -22,13 +23,15 @@ import {
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/dashboard/journal", label: "Journal History", icon: BookOpenText },
+  { href: "/dashboard/journal", label: "Journal", icon: BookOpenText },
+  { href: "/dashboard/entries", label: "Entries", icon: FileText },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
 function getPageTitle(pathname: string) {
   if (pathname === "/dashboard") return "Dashboard";
   if (pathname.startsWith("/dashboard/journal")) return "Journal";
+  if (pathname.startsWith("/dashboard/entries")) return "Entries";
   if (pathname.startsWith("/dashboard/settings")) return "Settings";
   return "Dashboard";
 }
