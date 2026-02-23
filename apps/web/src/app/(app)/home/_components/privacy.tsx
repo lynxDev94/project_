@@ -2,7 +2,10 @@ import { Lock, Shield } from "lucide-react";
 
 export const Privacy = () => {
   return (
-    <section className="bg-surface-dark/20 relative border-y border-white/5 py-24">
+    <section
+      id="safety"
+      className="bg-surface-dark/20 relative border-y border-white/5 py-24"
+    >
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid gap-16 md:grid-cols-2 md:items-center">
           <div>

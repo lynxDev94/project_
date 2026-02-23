@@ -10,6 +10,7 @@ const scrollIn = {
 export const Story = () => {
   return (
     <motion.section
+      id="philosophy"
       className="relative py-24"
       {...scrollIn}
     >

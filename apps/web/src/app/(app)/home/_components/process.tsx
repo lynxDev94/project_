@@ -15,6 +15,7 @@ const IMG_MIRROR =
 export const Process = () => {
   return (
     <motion.section
+      id="process"
       className="bg-surface-dark/30 relative py-32"
       {...scrollIn}
     >

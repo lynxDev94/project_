@@ -35,7 +35,10 @@ export const Pricing = () => {
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");
 
   return (
-    <section className="py-24">
+    <section
+      id="pricing"
+      className="py-24"
+    >
       <div className="mx-auto max-w-6xl px-6 text-center">
         <div className="border-brand/30 bg-brand/10 text-brand mb-6 inline-block rounded-full border px-4 py-1 text-xs font-bold">
           LIMITED ALPHA ACCESS

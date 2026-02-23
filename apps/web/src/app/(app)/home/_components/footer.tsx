@@ -36,7 +36,7 @@ export const Footer = () => {
             <ul className="space-y-4 text-sm text-slate-500">
               <li>
                 <Link
-                  href="#"
+                  href="#process"
                   className="hover:text-brand transition-colors"
                 >
                   How it works
@@ -44,7 +44,7 @@ export const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="#safety"
                   className="hover:text-brand transition-colors"
                 >
                   Safety
@@ -52,7 +52,7 @@ export const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/pricing"
+                  href="#pricing"
                   className="hover:text-brand transition-colors"
                 >
                   Pricing
@@ -65,7 +65,7 @@ export const Footer = () => {
             <ul className="space-y-4 text-sm text-slate-500">
               <li>
                 <Link
-                  href="#"
+                  href="#philosophy"
                   className="hover:text-brand transition-colors"
                 >
                   About
