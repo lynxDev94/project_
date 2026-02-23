@@ -19,11 +19,9 @@ const signupSchema = z
     firstName: z.string().min(1, "First name is required"),
     lastName: z.string().min(1, "Last name is required"),
     companyName: z.string().optional(),
-    termsAccepted: z
-      .boolean()
-      .refine((val) => val === true, {
-        message: "You must accept the terms to continue",
-      }),
+    termsAccepted: z.boolean().refine((val) => val === true, {
+      message: "You must accept the terms to continue",
+    }),
     email: z.string().email("Please enter a valid email address"),
     password: z
       .string()
@@ -78,7 +76,6 @@ export default function SignupInterface() {
       return false;
     }
   };
-
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -144,7 +141,6 @@ export default function SignupInterface() {
     }
   };
 
-
   return (
     <div className="fixed inset-0 flex min-h-screen overflow-y-auto font-sans">
       {/* Left: Branding — full-height background image + overlay */}
@@ -160,12 +156,15 @@ export default function SignupInterface() {
           }}
         />
         <div className="relative z-10 flex flex-col justify-between p-12">
-          <Link href="/" className="flex items-center gap-2">
+          <Link
+            href="/"
+            className="flex items-center gap-2"
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/brandLogo.png"
               alt="Shadow Journal"
-              className="h-8 w-8 object-contain rounded-full"
+              className="h-8 w-8 rounded-full object-contain"
             />
             <span className="font-sans text-xl font-bold tracking-tight text-slate-100">
               Shadow<span className="text-brand">Journal</span>
@@ -173,7 +172,7 @@ export default function SignupInterface() {
           </Link>
 
           <div className="space-y-6">
-            <h1 className="font-headline text-4xl font-bold leading-tight text-slate-100 xl:text-5xl">
+            <h1 className="font-headline text-4xl leading-tight font-bold text-slate-100 xl:text-5xl">
               <span className="font-medium">Begin your </span>
               <span className="glow-text text-brand">Individuation.</span>
             </h1>
@@ -184,7 +183,7 @@ export default function SignupInterface() {
             </p>
 
             <div className="rounded-2xl border border-white/10 bg-white/5 px-6 py-5 backdrop-blur-sm">
-              <p className="font-sans text-xs font-bold uppercase tracking-[0.2em] text-slate-300">
+              <p className="font-sans text-xs font-bold tracking-[0.2em] text-slate-300 uppercase">
                 Private & Encrypted
               </p>
               <p className="mt-3 max-w-xs font-sans text-sm leading-relaxed text-slate-400">
@@ -208,7 +207,7 @@ export default function SignupInterface() {
       </div>
 
       {/* Right: Signup form */}
-      <div className="relative flex w-full flex-col justify-between bg-surface-dark p-8 lg:w-1/2 lg:p-16">
+      <div className="bg-surface-dark relative flex w-full flex-col justify-between p-8 lg:w-1/2 lg:p-16">
         {/* <div className="absolute right-8 top-8 hidden lg:block">
           <button
             type="button"
@@ -248,22 +247,28 @@ export default function SignupInterface() {
               <div className="w-full border-t border-white/10" />
             </div>
             <div className="relative flex justify-center">
-              <span className="bg-surface-dark px-4 text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
+              <span className="bg-surface-dark px-4 text-xs font-medium tracking-[0.2em] text-slate-500 uppercase">
                 Continue with email
               </span>
             </div>
           </div>
 
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form
+            className="space-y-6"
+            onSubmit={handleSubmit}
+          >
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="firstName" className="font-sans text-slate-400">
+                <Label
+                  htmlFor="firstName"
+                  className="font-sans text-slate-400"
+                >
                   First Name
                 </Label>
                 <Input
                   id="firstName"
                   name="firstName"
-                  className="rounded-xl border-white/10 bg-surface-dark font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-brand"
+                  className="bg-surface-dark focus-visible:ring-brand rounded-xl border-white/10 font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
                   type="text"
                   placeholder="John"
                   value={formValues.firstName || ""}
@@ -275,7 +280,10 @@ export default function SignupInterface() {
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="lastName" className="font-sans text-slate-400">
+                <Label
+                  htmlFor="lastName"
+                  className="font-sans text-slate-400"
+                >
                   Last Name
                 </Label>
                 <Input
@@ -286,7 +294,7 @@ export default function SignupInterface() {
                   value={formValues.lastName || ""}
                   onChange={handleInputChange}
                   aria-invalid={!!errors.lastName}
-                  className="rounded-xl border-white/10 bg-surface-dark font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-brand"
+                  className="bg-surface-dark focus-visible:ring-brand rounded-xl border-white/10 font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
                 />
                 {errors.lastName && (
                   <p className="text-destructive text-sm">{errors.lastName}</p>
@@ -295,7 +303,10 @@ export default function SignupInterface() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="font-sans text-slate-400">
+              <Label
+                htmlFor="email"
+                className="font-sans text-slate-400"
+              >
                 Email Address
               </Label>
               <div className="relative">
@@ -307,8 +318,7 @@ export default function SignupInterface() {
                   placeholder="name@example.com"
                   value={formValues.email || ""}
                   onChange={handleInputChange}
-                  className="rounded-xl border-white/10 bg-surface-dark font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-brand"
-
+                  className="bg-surface-dark focus-visible:ring-brand rounded-xl border-white/10 font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
                   aria-invalid={!!errors.email}
                 />
                 {errors.email && (
@@ -318,7 +328,10 @@ export default function SignupInterface() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="font-sans text-slate-400">
+              <Label
+                htmlFor="password"
+                className="font-sans text-slate-400"
+              >
                 Password
               </Label>
               <div className="relative">
@@ -329,19 +342,20 @@ export default function SignupInterface() {
                   placeholder="Create a password"
                   value={formValues.password || ""}
                   onChange={handleInputChange}
-                  className="rounded-xl border-white/10 bg-surface-dark font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-brand"
+                  className="bg-surface-dark focus-visible:ring-brand rounded-xl border-white/10 font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
                   aria-invalid={!!errors.password}
                 />
                 {errors.password && (
                   <p className="text-destructive text-sm">{errors.password}</p>
                 )}
               </div>
-
-
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="font-sans text-slate-400">
+              <Label
+                htmlFor="confirmPassword"
+                className="font-sans text-slate-400"
+              >
                 Confirm Password
               </Label>
               <div className="relative">
@@ -352,7 +366,7 @@ export default function SignupInterface() {
                   placeholder="Confirm your password"
                   value={formValues.confirmPassword || ""}
                   onChange={handleInputChange}
-                  className="rounded-xl border-white/10 bg-surface-dark font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-brand"
+                  className="bg-surface-dark focus-visible:ring-brand rounded-xl border-white/10 font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
                   aria-invalid={!!errors.confirmPassword}
                 />
                 {errors.confirmPassword && (
@@ -374,22 +388,28 @@ export default function SignupInterface() {
                   }))
                 }
                 aria-invalid={!!errors.termsAccepted}
-                className="mt-1 h-4 w-4 rounded border-white/20 bg-surface-dark text-brand focus:ring-brand"
+                className="bg-surface-dark text-brand focus:ring-brand mt-1 h-4 w-4 rounded border-white/20"
               />
               <span className="font-sans text-sm text-slate-400">
                 I agree to the{" "}
-                <Link href="#" className="text-brand hover:underline">
+                <Link
+                  href="#"
+                  className="text-brand hover:underline"
+                >
                   Terms of Service
                 </Link>{" "}
                 and{" "}
-                <Link href="#" className="text-brand hover:underline">
+                <Link
+                  href="#"
+                  className="text-brand hover:underline"
+                >
                   Privacy Policy
                 </Link>
                 .
               </span>
             </label>
             {errors.termsAccepted && (
-              <p className="mt-1 text-destructive text-sm">
+              <p className="text-destructive mt-1 text-sm">
                 {errors.termsAccepted}
               </p>
             )}
@@ -400,7 +420,13 @@ export default function SignupInterface() {
               </Alert>
             )}
 
-            <Button type="submit" variant="primary" size="xl" className="w-full" disabled={isLoading}>
+            <Button
+              type="submit"
+              variant="primary"
+              size="xl"
+              className="w-full"
+              disabled={isLoading}
+            >
               {isLoading ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
@@ -409,24 +435,33 @@ export default function SignupInterface() {
             Already have an account?{" "}
             <Link
               href="/signin"
-              className="font-medium text-brand hover:underline"
+              className="text-brand font-medium hover:underline"
             >
               Sign in
             </Link>
           </p>
         </div>
 
-        <div className="mt-12 flex flex-col items-end gap-1 text-right font-sans text-[11px] uppercase tracking-wider text-slate-500">
+        <div className="mt-12 flex flex-col items-end gap-1 text-right font-sans text-[11px] tracking-wider text-slate-500 uppercase">
           <div className="flex items-center gap-2">
-            <Link href="#" className="hover:text-slate-400">
+            <Link
+              href="#"
+              className="hover:text-slate-400"
+            >
               Privacy Policy
             </Link>
             <span>•</span>
-            <Link href="#" className="hover:text-slate-400">
+            <Link
+              href="#"
+              className="hover:text-slate-400"
+            >
               Terms of Service
             </Link>
           </div>
-          <p>© 2024 Shadow Journal Lab. For personal growth purposes only. Not a substitute for medical therapy.</p>
+          <p>
+            © 2024 Shadow Journal Lab. For personal growth purposes only. Not a
+            substitute for medical therapy.
+          </p>
         </div>
       </div>
     </div>

@@ -21,18 +21,22 @@ export const PasswordInput = React.forwardRef<
         ref={ref}
         {...props}
       />
-<Button
-  type="button"
-  variant="ghost"
-  size="sm"
-  className="absolute top-0 right-0 h-full px-3 py-2 text-slate-300 hover:text-slate-50 hover:bg-transparent"
-  onClick={() => setShowPassword((prev) => !prev)}
->
-  {showPassword ? <EyeIcon className="h-4 w-4" /> : <EyeOffIcon className="h-4 w-4" />}
-  <span className="sr-only">
-    {showPassword ? "Hide password" : "Show password"}
-  </span>
-</Button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        className="absolute top-0 right-0 h-full px-3 py-2 text-slate-300 hover:bg-transparent hover:text-slate-50"
+        onClick={() => setShowPassword((prev) => !prev)}
+      >
+        {showPassword ? (
+          <EyeIcon className="h-4 w-4" />
+        ) : (
+          <EyeOffIcon className="h-4 w-4" />
+        )}
+        <span className="sr-only">
+          {showPassword ? "Hide password" : "Show password"}
+        </span>
+      </Button>
 
       {/* hides browsers password toggles */}
       <style>{`

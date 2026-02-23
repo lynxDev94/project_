@@ -8,7 +8,7 @@ import { Mail, Lock, Check, ArrowRight, ArrowLeft } from "lucide-react";
 
 export default function ForgotPasswordPage() {
   return (
-    <div className="fixed inset-0 flex min-h-screen flex-col overflow-y-auto font-sans bg-background-dark">
+    <div className="bg-background-dark fixed inset-0 flex min-h-screen flex-col overflow-y-auto font-sans">
       {/* Subtle gradient overlay */}
       <div
         className="pointer-events-none fixed inset-0 z-0 opacity-60"
@@ -28,7 +28,7 @@ export default function ForgotPasswordPage() {
           <img
             src="/images/brandLogo.png"
             alt="Shadow Journal"
-            className="h-9 w-9 object-contain rounded-full"
+            className="h-9 w-9 rounded-full object-contain"
           />
           <span className="font-sans text-xl font-bold tracking-tight text-slate-100">
             Shadow<span className="text-brand">Journal</span>
@@ -36,8 +36,8 @@ export default function ForgotPasswordPage() {
         </Link>
 
         {/* Central card */}
-        <div className="w-full max-w-md rounded-2xl border border-white/10 bg-surface-dark/95 p-8 shadow-xl shadow-black/20 backdrop-blur-sm">
-          <h1 className="mb-2 font-headline text-3xl font-bold text-slate-100 md:text-4xl">
+        <div className="bg-surface-dark/95 w-full max-w-md rounded-2xl border border-white/10 p-8 shadow-xl shadow-black/20 backdrop-blur-sm">
+          <h1 className="font-headline mb-2 text-3xl font-bold text-slate-100 md:text-4xl">
             Reclaim your <span className="italic">light.</span>
           </h1>
           <p className="mb-8 font-sans text-slate-400">
@@ -48,17 +48,17 @@ export default function ForgotPasswordPage() {
             <div className="space-y-2">
               <Label
                 htmlFor="email"
-                className="text-xs font-medium uppercase tracking-[0.15em] text-slate-500"
+                className="text-xs font-medium tracking-[0.15em] text-slate-500 uppercase"
               >
                 Email address
               </Label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" />
+                <Mail className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-slate-500" />
                 <Input
                   id="email"
                   type="email"
                   placeholder="name@example.com"
-                  className="rounded-xl border-white/10 bg-background-dark/80 pl-12 text-slate-100 placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-brand"
+                  className="bg-background-dark/80 focus-visible:ring-brand rounded-xl border-white/10 pl-12 text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
                 />
               </div>
             </div>
@@ -77,7 +77,7 @@ export default function ForgotPasswordPage() {
           <p className="mt-6 text-center">
             <Link
               href="/signin"
-              className="inline-flex items-center gap-2 text-sm font-medium text-brand hover:underline"
+              className="text-brand inline-flex items-center gap-2 text-sm font-medium hover:underline"
             >
               <ArrowLeft className="h-4 w-4" />
               Return to sign in
@@ -87,7 +87,7 @@ export default function ForgotPasswordPage() {
 
         {/* Footer */}
         <div className="mt-12 flex flex-col items-center gap-4 text-center">
-          <div className="flex items-center justify-center gap-6 font-sans text-[11px] uppercase tracking-wider text-slate-500">
+          <div className="flex items-center justify-center gap-6 font-sans text-[11px] tracking-wider text-slate-500 uppercase">
             <span className="flex items-center gap-1.5">
               <Lock className="h-3.5 w-3.5" />
               Encrypted
@@ -97,15 +97,21 @@ export default function ForgotPasswordPage() {
               Private
             </span>
           </div>
-          <div className="flex gap-4 font-sans text-[11px] uppercase tracking-wider text-slate-500">
-            <Link href="#" className="text-brand hover:underline">
+          <div className="flex gap-4 font-sans text-[11px] tracking-wider text-slate-500 uppercase">
+            <Link
+              href="#"
+              className="text-brand hover:underline"
+            >
               Privacy policy
             </Link>
-            <Link href="#" className="text-brand hover:underline">
+            <Link
+              href="#"
+              className="text-brand hover:underline"
+            >
               Terms of service
             </Link>
           </div>
-          <p className="font-sans text-[11px] uppercase tracking-wider text-slate-600">
+          <p className="font-sans text-[11px] tracking-wider text-slate-600 uppercase">
             © 2024 Shadow Journal
           </p>
         </div>

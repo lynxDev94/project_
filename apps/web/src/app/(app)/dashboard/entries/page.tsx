@@ -69,10 +69,10 @@ export default function EntriesPage() {
     <div className="mx-auto max-w-4xl font-sans text-slate-800">
       <div className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+          <p className="text-xs font-semibold tracking-[0.18em] text-slate-400 uppercase">
             Journal History
           </p>
-          <h1 className="mt-1 font-headline text-3xl font-bold text-slate-900 md:text-4xl">
+          <h1 className="font-headline mt-1 text-3xl font-bold text-slate-900 md:text-4xl">
             Your Reflections
           </h1>
           <p className="mt-2 text-sm text-slate-500">
@@ -81,16 +81,20 @@ export default function EntriesPage() {
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <Input
               type="search"
               placeholder="Search entries..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full min-w-[200px] pl-9 pr-4"
+              className="w-full min-w-[200px] pr-4 pl-9"
             />
           </div>
-          <Button variant="outline" size="default" className="gap-2">
+          <Button
+            variant="outline"
+            size="default"
+            className="gap-2"
+          >
             <LayoutList className="h-4 w-4" />
             Filter by Tag
           </Button>
@@ -106,12 +110,12 @@ export default function EntriesPage() {
               href={`/dashboard/entries/${entry.id}`}
               className="block"
             >
-              <article className="flex gap-6 rounded-2xl border border-dashboard-stroke bg-white p-5 shadow-card-layered transition-shadow hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.08)] md:p-6">
-                <div className="flex shrink-0 flex-col items-center justify-center border-r border-dashboard-stroke pr-6 text-center">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+              <article className="border-dashboard-stroke shadow-card-layered flex gap-6 rounded-2xl border bg-white p-5 transition-shadow hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.08)] md:p-6">
+                <div className="border-dashboard-stroke flex shrink-0 flex-col items-center justify-center border-r pr-6 text-center">
+                  <span className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
                     {month}
                   </span>
-                  <span className="font-headline text-3xl font-bold leading-none text-slate-900">
+                  <span className="font-headline text-3xl leading-none font-bold text-slate-900">
                     {day}
                   </span>
                   <span className="mt-1 text-xs font-medium text-slate-500">

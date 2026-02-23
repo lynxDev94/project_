@@ -136,7 +136,7 @@
   body {
     @apply bg-background text-foreground;
   }
- 
+
   /* Dark scrollbar to match Shadow Journal / dark pages */
   html {
     scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
@@ -206,7 +206,9 @@
     stroke-dasharray: 8 4;
   }
   @keyframes dash-flow {
-    to { stroke-dashoffset: -24; }
+    to {
+      stroke-dashoffset: -24;
+    }
   }
   .animate-dash-flow {
     animation: dash-flow 1s linear infinite;

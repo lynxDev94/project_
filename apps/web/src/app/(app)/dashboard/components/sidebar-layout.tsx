@@ -47,7 +47,10 @@ function SidebarNav({ pathname }: { pathname: string }) {
 
   return (
     <div className="flex h-full flex-col bg-[#F8F9FE]">
-      <Link href="/dashboard" className="mb-8 flex items-center gap-2 px-6 pt-6">
+      <Link
+        href="/dashboard"
+        className="mb-8 flex items-center gap-2 px-6 pt-6"
+      >
         <Image
           src="/images/brandLogo.png"
           alt="Shadow Journal"
@@ -74,7 +77,7 @@ function SidebarNav({ pathname }: { pathname: string }) {
               className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
                 active
                   ? "bg-brand/10 text-brand"
-                  : "text-slate-600 hover:bg-brand/5 hover:text-brand"
+                  : "hover:bg-brand/5 hover:text-brand text-slate-600"
               }`}
             >
               <Icon className="h-4 w-4" />
@@ -84,11 +87,11 @@ function SidebarNav({ pathname }: { pathname: string }) {
         })}
       </nav>
 
-      <div className="mt-auto border-t border-dashboard-stroke p-4">
+      <div className="border-dashboard-stroke mt-auto border-t p-4">
         <button
           type="button"
           onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-brand/5 hover:text-brand"
+          className="hover:bg-brand/5 hover:text-brand flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors"
         >
           <LogOut className="h-4 w-4" />
           Log out
@@ -102,15 +105,15 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <div className="h-screen overflow-hidden bg-dashboard-main-bg text-slate-800">
+    <div className="bg-dashboard-main-bg h-screen overflow-hidden text-slate-800">
       {/* Desktop fixed sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-dashboard-stroke md:block">
+      <aside className="border-dashboard-stroke fixed inset-y-0 left-0 z-40 hidden w-64 border-r md:block">
         <SidebarNav pathname={pathname} />
       </aside>
 
       <div className="flex h-full flex-col md:pl-64">
         {/* Global header with breadcrumbs + mobile menu */}
-        <header className="fixed left-0 right-0 top-0 z-30 h-14 border-b border-dashboard-stroke bg-dashboard-main-bg/95 backdrop-blur-md md:left-64">
+        <header className="border-dashboard-stroke bg-dashboard-main-bg/95 fixed top-0 right-0 left-0 z-30 h-14 border-b backdrop-blur-md md:left-64">
           <div className="flex h-full items-center justify-between px-4 md:px-8">
             <div className="flex items-center gap-3">
               <Sheet>
@@ -124,7 +127,10 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="p-0">
+                <SheetContent
+                  side="left"
+                  className="p-0"
+                >
                   <SheetHeader className="sr-only">
                     <SheetTitle>Navigation</SheetTitle>
                   </SheetHeader>
@@ -132,7 +138,7 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
                 </SheetContent>
               </Sheet>
 
-              <nav className="text-xs font-medium uppercase tracking-wider text-slate-500">
+              <nav className="text-xs font-medium tracking-wider text-slate-500 uppercase">
                 <span className="text-slate-400">
                   <span className="text-brand">Shadow</span>
                   <span className="text-slate-800">Journal</span>

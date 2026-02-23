@@ -80,7 +80,12 @@ module.exports = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        headline: ["var(--font-playfair)", "Playfair Display", "Georgia", "serif"],
+        headline: [
+          "var(--font-playfair)",
+          "Playfair Display",
+          "Georgia",
+          "serif",
+        ],
       },
     },
   },

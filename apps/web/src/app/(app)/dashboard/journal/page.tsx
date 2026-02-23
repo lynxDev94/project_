@@ -110,7 +110,8 @@ export default function JournalPage() {
   const [promptModalOpen, setPromptModalOpen] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState<string | null>(null);
   const [referencePrompt, setReferencePrompt] = useState<string | null>(null);
-  const [shuffledCategories, setShuffledCategories] = useState(PROMPT_CATEGORIES);
+  const [shuffledCategories, setShuffledCategories] =
+    useState(PROMPT_CATEGORIES);
 
   const wordCount = body.split(/\s+/).filter(Boolean).length;
 
@@ -145,27 +146,27 @@ export default function JournalPage() {
   return (
     <div className="mx-auto max-w-6xl font-sans text-slate-800">
       <div className="mb-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+        <p className="text-xs font-semibold tracking-[0.18em] text-slate-400 uppercase">
           Journal
         </p>
-        <h1 className="mt-1 font-headline text-3xl font-bold text-slate-900 md:text-4xl">
+        <h1 className="font-headline mt-1 text-3xl font-bold text-slate-900 md:text-4xl">
           New reflection
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-slate-500">
-          Capture what surfaced today. You can always return to refine, annotate, or
-          ask the AI to help you see patterns underneath the words.
+          Capture what surfaced today. You can always return to refine,
+          annotate, or ask the AI to help you see patterns underneath the words.
         </p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,2.3fr)_minmax(280px,1fr)]">
         {/* Main writing area */}
-        <div className="group flex min-h-[440px] flex-col overflow-hidden rounded-3xl border border-dashboard-stroke bg-white shadow-card-layered transition-shadow focus-within:shadow-[0_0_0_1px_rgba(108,43,238,0.15),0_4px_6px_-1px_rgba(0,0,0,0.05)]">
-          <div className="relative flex-1 px-6 pb-4 pt-6 md:px-8 md:pt-7">
-            <div className="absolute right-4 top-6 flex items-center gap-1 md:right-6">
+        <div className="group border-dashboard-stroke shadow-card-layered flex min-h-[440px] flex-col overflow-hidden rounded-3xl border bg-white transition-shadow focus-within:shadow-[0_0_0_1px_rgba(108,43,238,0.15),0_4px_6px_-1px_rgba(0,0,0,0.05)]">
+          <div className="relative flex-1 px-6 pt-6 pb-4 md:px-8 md:pt-7">
+            <div className="absolute top-6 right-4 flex items-center gap-1 md:right-6">
               <button
                 type="button"
                 onClick={() => setPromptModalOpen(true)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-brand/10 hover:text-brand"
+                className="hover:bg-brand/10 hover:text-brand flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors"
                 aria-label="Open prompt ideas"
               >
                 <Lightbulb className="h-4 w-4" />
@@ -183,22 +184,22 @@ export default function JournalPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Untitled reflection"
-              className="mb-3 w-[calc(100%-2rem)] pr-2 font-headline text-2xl font-semibold tracking-tight text-slate-900 placeholder:text-slate-300 md:text-3xl focus:outline-none"
+              className="font-headline mb-3 w-[calc(100%-2rem)] pr-2 text-2xl font-semibold tracking-tight text-slate-900 placeholder:text-slate-300 focus:outline-none md:text-3xl"
             />
-            <p className="mb-5 text-sm italic text-slate-400">
-              Begin your journey into the subconscious. Describe the dream, memory,
-              or feeling that keeps returning to you.
+            <p className="mb-5 text-sm text-slate-400 italic">
+              Begin your journey into the subconscious. Describe the dream,
+              memory, or feeling that keeps returning to you.
             </p>
             {referencePrompt && (
-              <div className="mb-5 flex items-start gap-3 rounded-xl border border-brand/20 bg-brand/5 p-4">
-                <PenLine className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
+              <div className="border-brand/20 bg-brand/5 mb-5 flex items-start gap-3 rounded-xl border p-4">
+                <PenLine className="text-brand mt-0.5 h-4 w-4 shrink-0" />
                 <p className="flex-1 text-sm font-medium text-slate-700">
                   {referencePrompt}
                 </p>
                 <button
                   type="button"
                   onClick={() => setReferencePrompt(null)}
-                  className="rounded p-1 text-slate-400 hover:bg-brand/10 hover:text-slate-600"
+                  className="hover:bg-brand/10 rounded p-1 text-slate-400 hover:text-slate-600"
                   aria-label="Remove reference prompt"
                 >
                   <X className="h-4 w-4" />
@@ -214,10 +215,10 @@ export default function JournalPage() {
           </div>
 
           {/* Bottom bar */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-t border-dashboard-stroke bg-slate-50/90 px-6 py-3.5 md:px-8">
+          <div className="border-dashboard-stroke flex flex-wrap items-center justify-between gap-4 border-t bg-slate-50/90 px-6 py-3.5 md:px-8">
             <div className="flex items-center gap-6 text-sm">
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                <p className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
                   Words
                 </p>
                 <p className="text-sm font-medium text-slate-700">
@@ -225,7 +226,7 @@ export default function JournalPage() {
                 </p>
               </div>
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                <p className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
                   Status
                 </p>
                 <p className="flex items-center gap-2 text-sm font-medium text-emerald-600">
@@ -238,7 +239,7 @@ export default function JournalPage() {
               <Button
                 variant="primary"
                 size="lg"
-                className="gap-2 rounded-xl bg-brand px-6 text-white shadow-sm hover:bg-brand/90"
+                className="bg-brand hover:bg-brand/90 gap-2 rounded-xl px-6 text-white shadow-sm"
               >
                 <Sparkles className="h-4 w-4" />
                 Analyze with AI
@@ -246,7 +247,7 @@ export default function JournalPage() {
               <Button
                 variant="primary"
                 size="lg"
-                className="gap-2 rounded-xl bg-brand px-6 text-white shadow-sm hover:bg-brand/90"
+                className="bg-brand hover:bg-brand/90 gap-2 rounded-xl px-6 text-white shadow-sm"
               >
                 <Check className="h-4 w-4" />
                 Save Entry
@@ -257,24 +258,29 @@ export default function JournalPage() {
 
         {/* Right column: AI & tags */}
         <div className="space-y-4">
-          <div className="overflow-hidden rounded-2xl border border-dashboard-stroke bg-white shadow-card-layered">
-            <div className="flex items-center gap-2 border-b border-dashboard-stroke bg-brand/5 px-5 py-3.5">
-              <Brain className="h-5 w-5 shrink-0 text-brand" />
-              <h2 className="font-sans text-sm font-bold uppercase tracking-wider text-brand">
+          <div className="border-dashboard-stroke shadow-card-layered overflow-hidden rounded-2xl border bg-white">
+            <div className="border-dashboard-stroke bg-brand/5 flex items-center gap-2 border-b px-5 py-3.5">
+              <Brain className="text-brand h-5 w-5 shrink-0" />
+              <h2 className="text-brand font-sans text-sm font-bold tracking-wider uppercase">
                 AI Insight
               </h2>
             </div>
             <div className="p-5">
               <p className="text-sm text-slate-600">
                 When you click{" "}
-                <span className="font-semibold text-brand">Analyze with AI</span>,
-                Shadow Journal will read this entry, surface recurring themes, and
-                suggest prompts for your next session.
+                <span className="text-brand font-semibold">
+                  Analyze with AI
+                </span>
+                , Shadow Journal will read this entry, surface recurring themes,
+                and suggest prompts for your next session.
               </p>
               <ul className="mt-4 space-y-3">
                 {AI_BENEFITS.map(({ icon: Icon, text }) => (
-                  <li key={text} className="flex items-start gap-3 text-sm text-slate-600">
-                    <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand">
+                  <li
+                    key={text}
+                    className="flex items-start gap-3 text-sm text-slate-600"
+                  >
+                    <span className="bg-brand/10 text-brand mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg">
                       <Icon className="h-3.5 w-3.5" />
                     </span>
                     {text}
@@ -284,7 +290,7 @@ export default function JournalPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-dashboard-stroke bg-white p-5 shadow-card-layered">
+          <div className="border-dashboard-stroke shadow-card-layered rounded-2xl border bg-white p-5">
             <h2 className="font-sans text-sm font-bold text-slate-800">
               Tags & motifs
             </h2>
@@ -295,13 +301,13 @@ export default function JournalPage() {
               {tags.map((tag) => (
                 <span
                   key={tag.id}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-3 py-1.5 text-sm font-medium text-brand"
+                  className="bg-brand/10 text-brand inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium"
                 >
                   {tag.label}
                   <button
                     type="button"
                     onClick={() => removeTag(tag.id)}
-                    className="rounded-full p-0.5 transition-colors hover:bg-brand/20"
+                    className="hover:bg-brand/20 rounded-full p-0.5 transition-colors"
                     aria-label={`Remove ${tag.label}`}
                   >
                     <X className="h-3 w-3" />
@@ -319,7 +325,7 @@ export default function JournalPage() {
                 <button
                   type="button"
                   onClick={addTag}
-                  className="rounded-full p-0.5 text-slate-500 transition-colors hover:bg-brand/10 hover:text-brand"
+                  className="hover:bg-brand/10 hover:text-brand rounded-full p-0.5 text-slate-500 transition-colors"
                   aria-label="Add tag"
                 >
                   <Plus className="h-4 w-4" />
@@ -365,7 +371,7 @@ export default function JournalPage() {
               return (
                 <div key={category.id}>
                   <div className="mb-2 flex items-center gap-2">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand/10 text-brand">
+                    <span className="bg-brand/10 text-brand flex h-8 w-8 items-center justify-center rounded-lg">
                       <Icon className="h-4 w-4" />
                     </span>
                     <h3 className="font-sans text-sm font-bold text-slate-800">
@@ -378,7 +384,9 @@ export default function JournalPage() {
                         key={prompt}
                         type="button"
                         onClick={() =>
-                          setSelectedPrompt(selectedPrompt === prompt ? null : prompt)
+                          setSelectedPrompt(
+                            selectedPrompt === prompt ? null : prompt,
+                          )
                         }
                         className={`w-full rounded-xl border px-4 py-3 text-left text-sm transition-colors ${
                           selectedPrompt === prompt
@@ -394,7 +402,7 @@ export default function JournalPage() {
               );
             })}
           </div>
-          <DialogFooter className="flex-row gap-2 border-t border-dashboard-stroke pt-4 sm:justify-end">
+          <DialogFooter className="border-dashboard-stroke flex-row gap-2 border-t pt-4 sm:justify-end">
             <Button
               variant="outline"
               onClick={() => setPromptModalOpen(false)}
@@ -403,7 +411,7 @@ export default function JournalPage() {
             </Button>
             <Button
               variant="primary"
-              className="gap-2 rounded-xl bg-brand text-white hover:bg-brand/90"
+              className="bg-brand hover:bg-brand/90 gap-2 rounded-xl text-white"
               onClick={handleApplyPrompt}
               disabled={!selectedPrompt}
             >

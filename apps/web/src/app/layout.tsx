@@ -6,6 +6,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { AuthProvider } from "@/providers/Auth";
 import { CreditsProvider } from "@/providers/Credits";
 import AuthLayout from "./auth-layout";
+import Script from "next/script";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,7 +22,8 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: "Shadow Journal",
-  description: "Shadow Journal — AI-guided Jungian insights for depth psychology and self-integration",
+  description:
+    "Shadow Journal — AI-guided Jungian insights for depth psychology and self-integration",
   icons: {
     icon: "/images/brandLogo.png",
   },
@@ -34,7 +36,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
+      <Script
+        id="Cookiebot"
+        src="https://consent.cookiebot.com/uc.js"
+        data-cbid="47906f3b-928a-469a-8061-140b49420f3d"
+        data-blockingmode="auto"
+        strategy="afterInteractive"
+      />
+      <body
+        className={`${inter.variable} ${playfair.variable} font-sans antialiased`}
+      >
         <NuqsAdapter>
           <AuthProvider>
             <CreditsProvider>

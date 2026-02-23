@@ -47,7 +47,7 @@ Waking up, the feeling of helplessness lingered. Is the bird my own vulnerabilit
     ],
     analysis: {
       shadowProjection:
-        'The silent figure likely represents your Senex aspect—the authoritarian judge. By projecting this onto your grandfather\'s image, you distance yourself from your own internal critic.',
+        "The silent figure likely represents your Senex aspect—the authoritarian judge. By projecting this onto your grandfather's image, you distance yourself from your own internal critic.",
       complexes: [
         {
           title: "The Authority Complex",
@@ -167,7 +167,7 @@ export default function EntryReadPage() {
       <div className="mx-auto max-w-4xl font-sans text-slate-800">
         <Link
           href="/dashboard/entries"
-          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition-colors hover:text-brand"
+          className="hover:text-brand mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to History
@@ -181,7 +181,7 @@ export default function EntryReadPage() {
     <div className="mx-auto max-w-6xl font-sans text-slate-800">
       <Link
         href="/dashboard/entries"
-        className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition-colors hover:text-brand"
+        className="hover:text-brand mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to History
@@ -189,24 +189,29 @@ export default function EntryReadPage() {
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1.8fr)_minmax(280px,1fr)]">
         {/* Left: Entry content */}
-        <div className="rounded-2xl border border-dashboard-stroke bg-white p-6 shadow-card-layered md:p-8">
+        <div className="border-dashboard-stroke shadow-card-layered rounded-2xl border bg-white p-6 md:p-8">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <p className="text-xs font-semibold tracking-wider text-slate-400 uppercase">
                 {formatDateTime(entry.createdAt)}
               </p>
-              <h1 className="mt-2 font-headline text-3xl font-bold text-slate-900 md:text-4xl">
+              <h1 className="font-headline mt-2 text-3xl font-bold text-slate-900 md:text-4xl">
                 {entry.title}
               </h1>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" className="h-9 w-9" aria-label="Edit entry">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-9 w-9"
+                aria-label="Edit entry"
+              >
                 <Pencil className="h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
                 size="icon"
-                className="h-9 w-9 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 hover:text-red-700"
+                className="h-9 w-9 border-red-200 text-red-600 hover:border-red-300 hover:bg-red-50 hover:text-red-700"
                 aria-label="Delete entry"
               >
                 <Trash2 className="h-4 w-4" />
@@ -232,7 +237,10 @@ export default function EntryReadPage() {
 
           <div className="prose prose-slate mt-8 max-w-none">
             {entry.body.split("\n\n").map((paragraph, i) => (
-              <p key={i} className="mb-4 text-base leading-relaxed text-slate-700">
+              <p
+                key={i}
+                className="mb-4 text-base leading-relaxed text-slate-700"
+              >
                 {paragraph}
               </p>
             ))}
@@ -241,13 +249,13 @@ export default function EntryReadPage() {
 
         {/* Right: AI Analysis */}
         <div className="space-y-4">
-          <div className="rounded-2xl border border-dashboard-stroke bg-white shadow-card-layered">
-            <div className="flex items-center gap-2 border-b border-dashboard-stroke bg-brand/5 px-5 py-3.5">
-              <Lightbulb className="h-5 w-5 shrink-0 text-brand" />
-              <h2 className="font-sans text-sm font-bold uppercase tracking-wider text-brand">
+          <div className="border-dashboard-stroke shadow-card-layered rounded-2xl border bg-white">
+            <div className="border-dashboard-stroke bg-brand/5 flex items-center gap-2 border-b px-5 py-3.5">
+              <Lightbulb className="text-brand h-5 w-5 shrink-0" />
+              <h2 className="text-brand font-sans text-sm font-bold tracking-wider uppercase">
                 AI Analysis
               </h2>
-              <span className="rounded-full bg-brand/20 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand">
+              <span className="bg-brand/20 text-brand rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
                 Jungian Lens
               </span>
             </div>
@@ -255,22 +263,24 @@ export default function EntryReadPage() {
               {/* Shadow Projection */}
               <div>
                 <div className="mb-2 flex items-center gap-2">
-                  <Wind className="h-4 w-4 text-brand" />
-                  <h3 className="font-sans text-xs font-bold uppercase tracking-wider text-slate-600">
+                  <Wind className="text-brand h-4 w-4" />
+                  <h3 className="font-sans text-xs font-bold tracking-wider text-slate-600 uppercase">
                     Shadow Projection
                   </h3>
                 </div>
                 <p className="text-sm leading-relaxed text-slate-700">
-                  {entry.analysis.shadowProjection.split("Senex").map((part, i, arr) =>
-                    i < arr.length - 1 ? (
-                      <span key={i}>
-                        {part}
-                        <span className="font-medium text-brand">Senex</span>
-                      </span>
-                    ) : (
-                      part
-                    )
-                  )}
+                  {entry.analysis.shadowProjection
+                    .split("Senex")
+                    .map((part, i, arr) =>
+                      i < arr.length - 1 ? (
+                        <span key={i}>
+                          {part}
+                          <span className="text-brand font-medium">Senex</span>
+                        </span>
+                      ) : (
+                        part
+                      ),
+                    )}
                 </p>
               </div>
 
@@ -278,8 +288,8 @@ export default function EntryReadPage() {
               {entry.analysis.complexes.length > 0 && (
                 <div>
                   <div className="mb-3 flex items-center gap-2">
-                    <Link2 className="h-4 w-4 text-brand" />
-                    <h3 className="font-sans text-xs font-bold uppercase tracking-wider text-slate-600">
+                    <Link2 className="text-brand h-4 w-4" />
+                    <h3 className="font-sans text-xs font-bold tracking-wider text-slate-600 uppercase">
                       Active Complexes
                     </h3>
                   </div>
@@ -302,8 +312,8 @@ export default function EntryReadPage() {
               {entry.analysis.imagery.length > 0 && (
                 <div>
                   <div className="mb-3 flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-brand" />
-                    <h3 className="font-sans text-xs font-bold uppercase tracking-wider text-slate-600">
+                    <Sparkles className="text-brand h-4 w-4" />
+                    <h3 className="font-sans text-xs font-bold tracking-wider text-slate-600 uppercase">
                       Archetypal Imagery
                     </h3>
                   </div>
@@ -324,7 +334,7 @@ export default function EntryReadPage() {
 
               <Button
                 variant="primary"
-                className="mt-4 w-full gap-2 rounded-xl bg-brand text-white hover:bg-brand/90"
+                className="bg-brand hover:bg-brand/90 mt-4 w-full gap-2 rounded-xl text-white"
               >
                 <MessageCircle className="h-4 w-4" />
                 Dialogue with this Shadow
