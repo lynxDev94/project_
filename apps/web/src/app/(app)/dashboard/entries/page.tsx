@@ -1,69 +1,69 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search, LayoutList } from "lucide-react";
+import { Search } from "lucide-react";
 import Link from "next/link";
 
-const MOCK_ENTRIES = [
-  {
-    id: "1",
-    title: "The Shadow in the Dream",
-    snippet:
-      "I woke up feeling uneasy about the figure in the hallway. It wasn't menacing, but it stood there with a heavy silence that felt like judgment. When I tried to speak to it, my voice wouldn't come out. I realize now that figure might have been...",
-    date: new Date("2023-10-24"),
-    tags: [
-      { label: "Fear", dotColor: "bg-brand" },
-      { label: "Dreams", dotColor: null },
-      { label: "The Shadow", dotColor: null },
-    ],
-  },
-  {
-    id: "2",
-    title: "Workplace Conflict",
-    snippet:
-      "The meeting today brought up old feelings. I noticed how quickly I judged my colleague's approach, and it made me wonder what part of myself I'm projecting onto her. The frustration felt disproportionate to the situation...",
-    date: new Date("2023-10-22"),
-    tags: [
-      { label: "Projection", dotColor: "bg-amber-500" },
-      { label: "The Persona", dotColor: null },
-    ],
-  },
-  {
-    id: "3",
-    title: "The Golden Shadow",
-    snippet:
-      "I've been noticing the qualities I admire in others—creativity, spontaneity, boldness—and wondering if I've suppressed those in myself. Jung wrote about the golden shadow, the positive traits we disown. Perhaps it's time to...",
-    date: new Date("2023-10-18"),
-    tags: [
-      { label: "Creativity", dotColor: null },
-      { label: "Envy", dotColor: "bg-amber-400" },
-    ],
-  },
-  {
-    id: "4",
-    title: "Recurring Anger",
-    snippet:
-      "Another moment where I snapped at something small. I've been tracking these outbursts. They seem to cluster around times when I feel unheard or undervalued. The anger masks something else—maybe grief, or a longing to be seen...",
-    date: new Date("2023-09-30"),
-    tags: [
-      { label: "Repression", dotColor: null },
-      { label: "The Shadow", dotColor: null },
-    ],
-  },
-];
+const SNIPPET_LENGTH = 120;
 
-function formatDate(date: Date) {
+function formatDate(dateStr: string) {
+  const d = new Date(dateStr);
   return {
-    month: date.toLocaleDateString("en-US", { month: "short" }).toUpperCase(),
-    day: date.getDate().toString(),
-    year: date.getFullYear().toString(),
+    month: d.toLocaleDateString("en-US", { month: "short" }).toUpperCase(),
+    day: d.getDate().toString(),
+    year: d.getFullYear().toString(),
   };
 }
 
+function truncate(body: string, maxLen: number): string {
+  const trimmed = body.trim();
+  if (trimmed.length <= maxLen) return trimmed;
+  const cut = trimmed.slice(0, maxLen).lastIndexOf(" ");
+  const end = cut > maxLen / 2 ? cut : maxLen;
+  return trimmed.slice(0, end) + "…";
+}
+
+type Entry = {
+  id: string;
+  title: string;
+  body: string;
+  tags: string[];
+  entry_date: string;
+  created_at: string;
+};
+
 export default function EntriesPage() {
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [entries, setEntries] = useState<Entry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  const fetchEntries = useCallback(async () => {
+    setLoading(true);
+    try {
+      const url = debouncedSearch
+        ? `/api/entries?search=${encodeURIComponent(debouncedSearch)}`
+        : "/api/entries";
+      const res = await fetch(url);
+      if (!res.ok) return;
+      const data = await res.json();
+      setEntries(data.entries ?? []);
+    } catch {
+      setEntries([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [debouncedSearch]);
+
+  useEffect(() => {
+    fetchEntries();
+  }, [fetchEntries]);
 
   return (
     <div className="mx-auto max-w-4xl font-sans text-slate-800">
@@ -79,77 +79,88 @@ export default function EntriesPage() {
             A journey through your shadow self.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="relative">
-            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <Input
-              type="search"
-              placeholder="Search entries..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full min-w-[200px] pr-4 pl-9"
-            />
-          </div>
-          <Button
-            variant="outline"
-            size="default"
-            className="gap-2"
-          >
-            <LayoutList className="h-4 w-4" />
-            Filter by Tag
-          </Button>
+        <div className="relative w-full min-w-[200px] sm:w-auto">
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Input
+            type="search"
+            placeholder="Search entries..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pr-4 pl-9"
+          />
         </div>
       </div>
 
-      <div className="space-y-4">
-        {MOCK_ENTRIES.map((entry) => {
-          const { month, day, year } = formatDate(entry.date);
-          return (
-            <Link
-              key={entry.id}
-              href={`/dashboard/entries/${entry.id}`}
-              className="block"
-            >
-              <article className="border-dashboard-stroke shadow-card-layered flex gap-6 rounded-2xl border bg-white p-5 transition-shadow hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.08)] md:p-6">
-                <div className="border-dashboard-stroke flex shrink-0 flex-col items-center justify-center border-r pr-6 text-center">
-                  <span className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
-                    {month}
-                  </span>
-                  <span className="font-headline text-3xl leading-none font-bold text-slate-900">
-                    {day}
-                  </span>
-                  <span className="mt-1 text-xs font-medium text-slate-500">
-                    {year}
-                  </span>
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h2 className="font-sans text-lg font-bold text-slate-900">
-                    {entry.title}
-                  </h2>
-                  <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-600">
-                    {entry.snippet}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {entry.tags.map((tag) => (
-                      <span
-                        key={tag.label}
-                        className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700"
-                      >
-                        {tag.dotColor && (
-                          <span
-                            className={`h-2 w-2 shrink-0 rounded-full ${tag.dotColor}`}
-                          />
-                        )}
-                        {tag.label}
-                      </span>
-                    ))}
+      {loading ? (
+        <div className="flex h-48 items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand border-t-transparent" />
+        </div>
+      ) : entries.length === 0 ? (
+        <div className="border-dashboard-stroke rounded-2xl border border-dashed bg-slate-50/50 p-12 text-center">
+          <p className="text-sm font-medium text-slate-600">
+            {debouncedSearch
+              ? "No entries match your search."
+              : "No entries yet."}
+          </p>
+          <p className="mt-1 text-sm text-slate-500">
+            {debouncedSearch ? (
+              "Try a different search term."
+            ) : (
+              <Link href="/dashboard/journal" className="text-brand hover:underline">
+                Start your first reflection
+              </Link>
+            )}
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {entries.map((entry) => {
+            const { month, day, year } = formatDate(entry.entry_date || entry.created_at);
+            const snippet = truncate(entry.body || "", SNIPPET_LENGTH);
+            return (
+              <Link
+                key={entry.id}
+                href={`/dashboard/entries/${entry.id}`}
+                className="block"
+              >
+                <article className="border-dashboard-stroke shadow-card-layered flex gap-6 rounded-2xl border bg-white p-5 transition-shadow hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.08)] md:p-6">
+                  <div className="border-dashboard-stroke flex shrink-0 flex-col items-center justify-center border-r pr-6 text-center">
+                    <span className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
+                      {month}
+                    </span>
+                    <span className="font-headline text-3xl leading-none font-bold text-slate-900">
+                      {day}
+                    </span>
+                    <span className="mt-1 text-xs font-medium text-slate-500">
+                      {year}
+                    </span>
                   </div>
-                </div>
-              </article>
-            </Link>
-          );
-        })}
-      </div>
+                  <div className="min-w-0 flex-1">
+                    <h2 className="font-sans text-lg font-bold text-slate-900">
+                      {entry.title || "Untitled reflection"}
+                    </h2>
+                    <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-600">
+                      {snippet || "No content"}
+                    </p>
+                    {entry.tags?.length > 0 && (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {entry.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium capitalize text-slate-700"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </article>
+              </Link>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

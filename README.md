@@ -27,13 +27,19 @@ pnpm dev
 ```
 ### 🗄️ Database Setup
 
-1. **Database Schema**: Copy and paste `supabase-schema.sql` in your Supabase SQL Editor
+1. **Full schema**: Run `supabase-schema.sql` in the Supabase SQL Editor (includes users, mood_entries, entries)
+2. **Or add incrementally**: Run `supabase-mood-migration.sql` for mood only, or `supabase-entries-migration.sql` for journal entries only
 
 ### What gets set up:
 - ✅ Users table with Stripe integration
+- ✅ Mood entries (for Mood Trend)
+- ✅ Journal entries (for reflections)
 - ✅ Row Level Security (RLS) policies  
 - ✅ Automatic user profile creation
 - ✅ Performance indexes and triggers
+
+### Optional improvements
+See [`docs/OPTIONAL_IMPROVEMENTS.md`](docs/OPTIONAL_IMPROVEMENTS.md) for ideas: Zustand caching, edit/delete entries, AI analysis, full-text search, and more.
 
 ### Terminal Tab 2: Stripe Webhook (for purchases + credits)
 

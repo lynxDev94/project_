@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useAuthContext } from "@/providers/Auth";
 import {
   Sparkles,
   Check,
@@ -13,109 +14,179 @@ import {
   PenLine,
   Calendar,
   ArrowRight,
-  Menu,
 } from "lucide-react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 const WEEKDAYS = ["M", "T", "W", "T", "F", "S", "S"];
-const STREAK_FILLED = [true, true, true, true, true, false, false];
-const MOOD_POINTS = [45, 62, 58, 72, 68, 85, 78];
-const CHART_DAYS = ["S", "M", "T", "W", "T", "F", "S"];
 
 function MoodTrendChart({
   points,
   labels,
+  isEmpty,
 }: {
-  points: number[];
+  points: (number | null)[];
   labels: string[];
+  isEmpty?: boolean;
 }) {
-  const width = 400;
-  const height = 120;
-  const padding = { top: 8, right: 8, bottom: 24, left: 8 };
-  const chartWidth = width - padding.left - padding.right;
-  const chartHeight = height - padding.top - padding.bottom;
-  const min = Math.min(...points);
-  const max = Math.max(...points);
-  const range = max - min || 1;
-  const stepX = chartWidth / (points.length - 1);
-
-  const coords = points.map((y, i) => ({
-    x: padding.left + i * stepX,
-    y: padding.top + chartHeight - ((y - min) / range) * chartHeight,
+  const data = labels.map((label, index) => ({
+    label,
+    mood: points[index] ?? null,
   }));
-  const linePoints = coords.map((c) => `${c.x},${c.y}`).join(" ");
-  const areaD = `M ${padding.left} ${padding.top + chartHeight} ${coords.map((c) => `L ${c.x} ${c.y}`).join(" ")} L ${padding.left + chartWidth} ${padding.top + chartHeight} Z`;
+
+  if (isEmpty || points.every((p) => p == null)) {
+    return (
+      <div className="flex h-40 flex-col items-center justify-center gap-2 text-center">
+        <p className="text-sm font-medium text-slate-500">
+          No mood entries yet this week
+        </p>
+        <p className="text-xs text-slate-400">
+          Use the Mood Check-in above to log how you&apos;re feeling
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <svg
-      viewBox={`0 0 ${width} ${height}`}
-      className="h-full w-full"
-      preserveAspectRatio="xMidYMid meet"
-      aria-hidden
+    <ResponsiveContainer
+      width="100%"
+      height="100%"
     >
-      <defs>
-        <linearGradient
-          id="mood-fill"
-          x1="0"
-          y1="0"
-          x2="0"
-          y2="1"
-          gradientUnits="objectBoundingBox"
-        >
-          <stop
-            offset="0%"
-            stopColor="rgb(108, 43, 238)"
-            stopOpacity="0.25"
-          />
-          <stop
-            offset="100%"
-            stopColor="rgb(108, 43, 238)"
-            stopOpacity="0.02"
-          />
-        </linearGradient>
-      </defs>
-      <path
-        d={areaD}
-        fill="url(#mood-fill)"
-      />
-      <polyline
-        points={linePoints}
-        fill="none"
-        stroke="rgb(108, 43, 238)"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {coords.map((c, i) => (
-        <circle
-          key={i}
-          cx={c.x}
-          cy={c.y}
-          r="4"
-          fill="rgb(108, 43, 238)"
+      <BarChart
+        data={data}
+        margin={{ top: 8, right: 8, left: 8, bottom: 16 }}
+      >
+        <CartesianGrid
+          strokeDasharray="3 3"
+          vertical={false}
+          stroke="#e2e8f0"
+          opacity={0.4}
         />
-      ))}
-      {labels.map((label, i) => (
-        <text
-          key={label + i}
-          x={padding.left + i * stepX}
-          y={height - 6}
-          textAnchor="middle"
-          className="fill-slate-400 text-[10px] font-medium"
-        >
-          {label}
-        </text>
-      ))}
-    </svg>
+        <YAxis
+          domain={[0, 100]}
+          hide
+        />
+        <XAxis
+          dataKey="label"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+          tick={{ fontSize: 11, fill: "#64748b" }}
+        />
+        <Tooltip
+          cursor={{ fill: "rgba(108, 43, 238, 0.08)" }}
+          contentStyle={{
+            borderRadius: 8,
+            border: "1px solid rgba(148, 163, 184, 0.4)",
+            boxShadow: "0 10px 30px rgba(15, 23, 42, 0.15)",
+          }}
+          formatter={(value) => [
+            value == null ? "–" : String(value),
+            "Mood score",
+          ]}
+        />
+        <Bar
+          dataKey="mood"
+          fill="rgb(108, 43, 238)"
+          radius={[4, 4, 0, 0]}
+        />
+      </BarChart>
+    </ResponsiveContainer>
   );
 }
 
 export default function DashboardPage() {
-  const [moodValue, setMoodValue] = useState(70);
+  const { user } = useAuthContext();
+  const [moodValue, setMoodValue] = useState(50);
+  const [submittedToday, setSubmittedToday] = useState(false);
+  const [trendLabels, setTrendLabels] = useState<string[]>([]);
+  const [trendPoints, setTrendPoints] = useState<(number | null)[]>([]);
+  const [moodLoading, setMoodLoading] = useState(false);
+  const [trendLoading, setTrendLoading] = useState(true);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [stats, setStats] = useState<{
+    totalEntries: number;
+    totalWords: number;
+    streak: number;
+    mostActiveDay: string;
+    weekDays: boolean[];
+  } | null>(null);
+
+  const fetchMood = useCallback(async () => {
+    setMoodLoading(true);
+    try {
+      const res = await fetch("/api/mood?days=7");
+      if (!res.ok) return;
+      const data = await res.json();
+      setTrendLabels(data.trend?.labels ?? []);
+      setTrendPoints(data.trend?.points ?? []);
+      setSubmittedToday(data.submittedToday ?? false);
+      if (data.todayMood != null) setMoodValue(data.todayMood);
+    } catch {
+      // ignore
+    } finally {
+      setMoodLoading(false);
+      setTrendLoading(false);
+    }
+  }, []);
+
+  const fetchStats = useCallback(async () => {
+    try {
+      const res = await fetch("/api/entries/stats");
+      if (!res.ok) return;
+      const data = await res.json();
+      setStats({
+        totalEntries: data.totalEntries ?? 0,
+        totalWords: data.totalWords ?? 0,
+        streak: data.streak ?? 0,
+        mostActiveDay: data.mostActiveDay ?? "—",
+        weekDays: Array.isArray(data.weekDays) ? data.weekDays : Array(7).fill(false),
+      });
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchMood();
+    fetchStats();
+  }, [fetchMood, fetchStats]);
+
+  const handleSubmitMood = async () => {
+    setSubmitLoading(true);
+    try {
+      const res = await fetch("/api/mood", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ moodScore: moodValue }),
+      });
+      await res.json();
+      if (res.ok) {
+        setSubmittedToday(true);
+        await fetchMood();
+      }
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  const greetingName =
+    user?.firstName ||
+    user?.displayName ||
+    user?.email?.split("@")[0] ||
+    "there";
 
   return (
     <div className="font-sans text-slate-800">
       <h1 className="font-headline mb-2 text-3xl font-bold text-slate-800 md:text-4xl">
-        Good morning, Alex.
+        Good morning, {greetingName}.
       </h1>
       <p className="mb-8 text-lg text-slate-600">
         Where shall we go within today?
@@ -142,19 +213,6 @@ export default function DashboardPage() {
           />
 
           <div className="relative z-10 flex flex-1 flex-col justify-between px-6 py-5 md:px-7 md:py-6">
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                className="rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
-                aria-label="Daily prompt menu"
-              >
-                <Menu className="h-4 w-4" />
-              </button>
-              <span className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
-                Daily Prompt
-              </span>
-            </div>
-
             <div className="mt-4">
               <h2 className="font-headline mb-3 text-2xl font-bold text-slate-800 md:text-3xl">
                 Welcome
@@ -168,7 +226,7 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-4">
+            <div className="mt-6 flex flex-wrap items-center gap-6">
               <Link href="/dashboard/journal">
                 <Button
                   variant="primary"
@@ -179,18 +237,38 @@ export default function DashboardPage() {
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
-              <div className="flex min-w-[180px] flex-1 items-center gap-3">
-                <span className="text-sm font-medium text-slate-600">
-                  Mood Check-in
-                </span>
+              <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-medium text-slate-600">
+                    Mood Check-in
+                  </span>
+                  <span className="text-brand font-headline w-10 text-lg font-bold">
+                    {moodValue}
+                  </span>
+                  <span className="text-xs text-slate-500">/ 100</span>
+                </div>
                 <input
                   type="range"
-                  min="0"
+                  min="1"
                   max="100"
                   value={moodValue}
                   onChange={(e) => setMoodValue(Number(e.target.value))}
-                  className="accent-brand h-2 flex-1 appearance-none rounded-full bg-slate-200"
+                  disabled={moodLoading}
+                  className="accent-brand h-2 flex-1 appearance-none rounded-full bg-slate-200 disabled:opacity-60"
                 />
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="shrink-0 rounded-xl"
+                  disabled={submitLoading || moodLoading}
+                  onClick={handleSubmitMood}
+                >
+                  {submitLoading
+                    ? "Saving..."
+                    : submittedToday
+                      ? "Update"
+                      : "Submit"}
+                </Button>
               </div>
             </div>
           </div>
@@ -203,12 +281,12 @@ export default function DashboardPage() {
                 Weekly Streak
               </h2>
               <span className="bg-brand/10 text-brand shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-wide uppercase">
-                5 days
+                {stats?.streak ?? 0} days
               </span>
             </div>
             <div className="grid grid-cols-7 gap-x-1 gap-y-2">
               {WEEKDAYS.map((day, i) => {
-                const filled = STREAK_FILLED[i];
+                const filled = stats?.weekDays?.[i] ?? false;
                 return (
                   <div
                     key={day + i}
@@ -298,10 +376,19 @@ export default function DashboardPage() {
           </span>
         </div>
         <div className="h-40 w-full">
-          <MoodTrendChart
-            points={MOOD_POINTS}
-            labels={CHART_DAYS}
-          />
+          {trendLoading ? (
+            <div className="flex h-40 items-center justify-center">
+              <div className="border-brand h-8 w-8 animate-spin rounded-full border-2 border-t-transparent" />
+            </div>
+          ) : (
+            <MoodTrendChart
+              points={trendPoints}
+              labels={trendLabels}
+              isEmpty={
+                trendPoints.length === 0 || trendPoints.every((p) => p == null)
+              }
+            />
+          )}
         </div>
       </div>
 
@@ -316,7 +403,7 @@ export default function DashboardPage() {
                 Entries Written
               </p>
               <p className="font-headline text-2xl font-bold text-slate-900">
-                12
+                {stats?.totalEntries ?? "—"}
               </p>
             </div>
           </div>
@@ -329,7 +416,9 @@ export default function DashboardPage() {
             <div>
               <p className="text-sm font-medium text-slate-500">Total Words</p>
               <p className="font-headline text-2xl font-bold text-slate-900">
-                8,240
+                {stats?.totalWords != null
+                  ? stats.totalWords.toLocaleString()
+                  : "—"}
               </p>
             </div>
           </div>
@@ -344,7 +433,7 @@ export default function DashboardPage() {
                 Most Active Day
               </p>
               <p className="font-headline text-lg font-bold text-slate-900">
-                Thursday
+                {stats?.mostActiveDay ?? "—"}
               </p>
             </div>
           </div>

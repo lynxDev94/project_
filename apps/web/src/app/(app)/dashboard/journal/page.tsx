@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -72,12 +73,6 @@ const PROMPT_CATEGORIES = [
   },
 ];
 
-const SAMPLE_TAGS = [
-  { id: "1", label: "fear" },
-  { id: "2", label: "insecurity" },
-  { id: "3", label: "resilience" },
-];
-
 const AI_BENEFITS = [
   {
     icon: Lightbulb,
@@ -103,17 +98,73 @@ function shuffleArray<T>(arr: T[]): T[] {
 }
 
 export default function JournalPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
   const [title, setTitle] = useState("Untitled reflection");
   const [body, setBody] = useState("");
-  const [tags, setTags] = useState(SAMPLE_TAGS);
+  const [tags, setTags] = useState<{ id: string; label: string }[]>([]);
   const [newTag, setNewTag] = useState("");
   const [promptModalOpen, setPromptModalOpen] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState<string | null>(null);
   const [referencePrompt, setReferencePrompt] = useState<string | null>(null);
   const [shuffledCategories, setShuffledCategories] =
     useState(PROMPT_CATEGORIES);
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [editLoading, setEditLoading] = useState(!!editId);
+  const entryDateRef = useRef<string>(new Date().toISOString().slice(0, 10));
+  const lastSavedRef = useRef<{ title: string; body: string; tags: string[] } | null>(null);
+
+  useEffect(() => {
+    if (!editId) {
+      setEditLoading(false);
+      return;
+    }
+    let cancelled = false;
+    fetch(`/api/entries/${editId}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!cancelled && data?.entry) {
+          const e = data.entry;
+          setTitle(e.title || "Untitled reflection");
+          setBody(e.body || "");
+          setTags(
+            (e.tags ?? []).map((l: string) => ({ id: `tag-${l}`, label: l })),
+          );
+          entryDateRef.current = e.entry_date || new Date().toISOString().slice(0, 10);
+          lastSavedRef.current = {
+            title: e.title || "Untitled reflection",
+            body: e.body || "",
+            tags: e.tags ?? [],
+          };
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setEditLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [editId]);
 
   const wordCount = body.split(/\s+/).filter(Boolean).length;
+
+  const tagLabels = tags.map((t) => t.label);
+  const hasContent = title.trim() || body.trim();
+  const isDirty =
+    lastSavedRef.current === null
+      ? hasContent
+      : title !== lastSavedRef.current.title ||
+        body !== lastSavedRef.current.body ||
+        JSON.stringify(tagLabels.sort()) !== JSON.stringify([...lastSavedRef.current.tags].sort());
+  const isSaved = lastSavedRef.current !== null;
+
+  const statusText =
+    !isSaved && hasContent
+      ? "Unsaved"
+      : isSaved && !isDirty
+        ? "Saved"
+        : isSaved && isDirty
+          ? "Unsaved changes"
+          : "—";
 
   const handleShuffleSuggestions = useCallback(() => {
     const shuffled = shuffleArray(PROMPT_CATEGORIES).map((cat) => ({
@@ -138,10 +189,46 @@ export default function JournalPage() {
 
   const addTag = () => {
     if (!newTag.trim()) return;
-    const label = newTag.trim();
+    const label = newTag.trim().toLowerCase();
+    if (tags.some((t) => t.label === label)) return;
     setTags((t) => [...t, { id: String(Date.now()), label }]);
     setNewTag("");
   };
+
+  const handleSaveEntry = async () => {
+    setSaveLoading(true);
+    try {
+      const payload = {
+        title: title.trim() || "Untitled reflection",
+        body,
+        tags: tagLabels,
+        entryDate: entryDateRef.current,
+      };
+      const url = editId ? `/api/entries/${editId}` : "/api/entries";
+      const res = await fetch(url, {
+        method: editId ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (res.ok && data.entry) {
+        lastSavedRef.current = { title, body, tags: tagLabels };
+        router.push(`/dashboard/entries/${data.entry.id}`);
+      }
+    } finally {
+      setSaveLoading(false);
+    }
+  };
+
+  if (editLoading) {
+    return (
+      <div className="mx-auto max-w-6xl font-sans text-slate-800">
+        <div className="flex h-64 items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand border-t-transparent" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-6xl font-sans text-slate-800">
@@ -150,7 +237,7 @@ export default function JournalPage() {
           Journal
         </p>
         <h1 className="font-headline mt-1 text-3xl font-bold text-slate-900 md:text-4xl">
-          New reflection
+          {editId ? "Edit reflection" : "New reflection"}
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-slate-500">
           Capture what surfaced today. You can always return to refine,
@@ -229,9 +316,25 @@ export default function JournalPage() {
                 <p className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
                   Status
                 </p>
-                <p className="flex items-center gap-2 text-sm font-medium text-emerald-600">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                  Saved
+                <p
+                  className={`flex items-center gap-2 text-sm font-medium ${
+                    statusText === "Saved"
+                      ? "text-emerald-600"
+                      : statusText === "Unsaved" || statusText === "Unsaved changes"
+                        ? "text-amber-600"
+                        : "text-slate-500"
+                  }`}
+                >
+                  {statusText !== "—" && (
+                    <span
+                      className={`h-2 w-2 rounded-full ${
+                        statusText === "Saved"
+                          ? "bg-emerald-500"
+                          : "bg-amber-500"
+                      }`}
+                    />
+                  )}
+                  {statusText}
                 </p>
               </div>
             </div>
@@ -248,9 +351,11 @@ export default function JournalPage() {
                 variant="primary"
                 size="lg"
                 className="bg-brand hover:bg-brand/90 gap-2 rounded-xl px-6 text-white shadow-sm"
+                onClick={handleSaveEntry}
+                disabled={saveLoading || editLoading || !body.trim()}
               >
                 <Check className="h-4 w-4" />
-                Save Entry
+                {saveLoading ? "Saving..." : editId ? "Update Entry" : "Save Entry"}
               </Button>
             </div>
           </div>
