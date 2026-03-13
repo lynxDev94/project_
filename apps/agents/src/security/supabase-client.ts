@@ -8,8 +8,15 @@ let supabaseInstance: ReturnType<typeof createClient> | null = null;
  * @returns A Supabase client instance
  */
 export function getSupabaseClient() {
+  if (supabaseInstance) {
+    return supabaseInstance;
+  }
+
   const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_KEY;
+  const supabaseKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ??
+    process.env.SUPABASE_KEY ??
+    process.env.SUPABASE_Key;
 
   if (!supabaseUrl || !supabaseKey) {
     throw new Error(
@@ -17,7 +24,6 @@ export function getSupabaseClient() {
     );
   }
 
-  // Use the browser client when in browser environment
   supabaseInstance = createClient(supabaseUrl, supabaseKey);
 
   return supabaseInstance;

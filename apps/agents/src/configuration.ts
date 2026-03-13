@@ -15,6 +15,11 @@ export const ConfigurationSchema = Annotation.Root({
    * The name of the language model to be used by the agent.
    */
   model: Annotation<string>,
+
+  /**
+   * Enables constrained output and RAG-centric behavior for journal analysis.
+   */
+  analysisMode: Annotation<boolean>,
 });
 
 export function ensureConfiguration(
@@ -27,6 +32,10 @@ export function ensureConfiguration(
   return {
     systemPromptTemplate:
       configurable.systemPromptTemplate ?? SYSTEM_PROMPT_TEMPLATE,
-    model: configurable.model ?? "claude-3-5-sonnet-20240620",
+    model:
+      configurable.model ??
+      process.env.DEFAULT_AGENT_MODEL ??
+      "openai/gpt-4o-mini",
+    analysisMode: configurable.analysisMode ?? false,
   };
 }

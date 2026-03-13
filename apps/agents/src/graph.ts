@@ -4,6 +4,7 @@ import { MessagesAnnotation, StateGraph } from "@langchain/langgraph";
 import { ToolNode } from "@langchain/langgraph/prebuilt";
 
 import { ConfigurationSchema, ensureConfiguration } from "./configuration.js";
+import { JOURNAL_ANALYSIS_PROMPT_BLOCK } from "./prompts.js";
 import { TOOLS } from "./tools.js";
 import { loadChatModel } from "./utils.js";
 
@@ -17,14 +18,17 @@ async function callModel(
 
   // Feel free to customize the prompt, model, and other logic!
   const model = (await loadChatModel(configuration.model)).bindTools(TOOLS);
+  const systemPrompt = configuration.systemPromptTemplate
+    .replace("{system_time}", new Date().toISOString())
+    .replace(
+      "{analysis_mode_block}",
+      configuration.analysisMode ? `\n${JOURNAL_ANALYSIS_PROMPT_BLOCK}` : "",
+    );
 
   const response = await model.invoke([
     {
       role: "system",
-      content: configuration.systemPromptTemplate.replace(
-        "{system_time}",
-        new Date().toISOString(),
-      ),
+      content: systemPrompt,
     },
     ...state.messages,
   ]);
@@ -38,7 +42,7 @@ function routeModelOutput(state: typeof MessagesAnnotation.State): string {
   const messages = state.messages;
   const lastMessage = messages[messages.length - 1];
   // If the LLM is invoking tools, route there.
-  if ((lastMessage as AIMessage)?.tool_calls?.length || 0 > 0) {
+  if (((lastMessage as AIMessage)?.tool_calls?.length ?? 0) > 0) {
     return "tools";
   }
   // Otherwise end the graph.

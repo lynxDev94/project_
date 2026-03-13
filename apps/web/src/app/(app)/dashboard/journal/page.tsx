@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import {
+  AiAnalysisModal,
+  JungianAnalysisResult,
+} from "@/components/journal/AiAnalysisModal";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -112,10 +116,17 @@ export default function JournalPage() {
     useState(PROMPT_CATEGORIES);
   const [saveLoading, setSaveLoading] = useState(false);
   const [editLoading, setEditLoading] = useState(!!editId);
+  const [activeEntryId, setActiveEntryId] = useState<string | null>(editId);
+  const [analysisOpen, setAnalysisOpen] = useState(false);
+  const [analysisLoading, setAnalysisLoading] = useState(false);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [analysisResult, setAnalysisResult] =
+    useState<JungianAnalysisResult | null>(null);
   const entryDateRef = useRef<string>(new Date().toISOString().slice(0, 10));
   const lastSavedRef = useRef<{ title: string; body: string; tags: string[] } | null>(null);
 
   useEffect(() => {
+    setActiveEntryId(editId);
     if (!editId) {
       setEditLoading(false);
       return;
@@ -126,6 +137,7 @@ export default function JournalPage() {
       .then((data) => {
         if (!cancelled && data?.entry) {
           const e = data.entry;
+          setActiveEntryId(e.id);
           setTitle(e.title || "Untitled reflection");
           setBody(e.body || "");
           setTags(
@@ -195,28 +207,75 @@ export default function JournalPage() {
     setNewTag("");
   };
 
+  const persistEntry = useCallback(async () => {
+    const payload = {
+      title: title.trim() || "Untitled reflection",
+      body,
+      tags: tagLabels,
+      entryDate: entryDateRef.current,
+    };
+    const idForRequest = activeEntryId ?? editId;
+    const url = idForRequest ? `/api/entries/${idForRequest}` : "/api/entries";
+    const method = idForRequest ? "PATCH" : "POST";
+
+    const res = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data?.entry?.id) {
+      throw new Error(data?.error || "Could not save entry");
+    }
+
+    const savedId = String(data.entry.id);
+    setActiveEntryId(savedId);
+    lastSavedRef.current = { title, body, tags: tagLabels };
+    return savedId;
+  }, [activeEntryId, body, editId, tagLabels, title]);
+
   const handleSaveEntry = async () => {
     setSaveLoading(true);
     try {
-      const payload = {
-        title: title.trim() || "Untitled reflection",
-        body,
-        tags: tagLabels,
-        entryDate: entryDateRef.current,
-      };
-      const url = editId ? `/api/entries/${editId}` : "/api/entries";
-      const res = await fetch(url, {
-        method: editId ? "PATCH" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (res.ok && data.entry) {
-        lastSavedRef.current = { title, body, tags: tagLabels };
-        router.push(`/dashboard/entries/${data.entry.id}`);
-      }
+      const savedId = await persistEntry();
+      router.push(`/dashboard/entries/${savedId}`);
     } finally {
       setSaveLoading(false);
+    }
+  };
+
+  const handleAnalyze = async () => {
+    if (!body.trim()) return;
+    setAnalysisOpen(true);
+    setAnalysisLoading(true);
+    setAnalysisError(null);
+    setAnalysisResult(null);
+    try {
+      let entryId = activeEntryId ?? editId;
+      if (!entryId) {
+        entryId = await persistEntry();
+        router.replace(`/dashboard/journal?edit=${entryId}`);
+      }
+
+      const res = await fetch(`/api/entries/${entryId}/analysis`, {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok || !data?.analysis) {
+        throw new Error(data?.error || "Analysis failed");
+      }
+
+      setAnalysisResult({
+        ...data.analysis,
+        lowConfidence: Boolean(data.lowConfidence),
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to run analysis";
+      setAnalysisError(message);
+    } finally {
+      setAnalysisLoading(false);
     }
   };
 
@@ -343,9 +402,11 @@ export default function JournalPage() {
                 variant="primary"
                 size="lg"
                 className="bg-brand hover:bg-brand/90 gap-2 rounded-xl px-6 text-white shadow-sm"
+                onClick={handleAnalyze}
+                disabled={analysisLoading || saveLoading || editLoading || !body.trim()}
               >
                 <Sparkles className="h-4 w-4" />
-                Analyze with AI
+                {analysisLoading ? "Analyzing..." : "Analyze with AI"}
               </Button>
               <Button
                 variant="primary"
@@ -526,6 +587,14 @@ export default function JournalPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AiAnalysisModal
+        open={analysisOpen}
+        onOpenChange={setAnalysisOpen}
+        loading={analysisLoading}
+        error={analysisError}
+        result={analysisResult}
+      />
     </div>
   );
 }

@@ -18,7 +18,12 @@ import {
   Trash2,
   Lightbulb,
   MessageCircle,
+  Sparkles,
 } from "lucide-react";
+import {
+  AiAnalysisModal,
+  JungianAnalysisResult,
+} from "@/components/journal/AiAnalysisModal";
 
 type Entry = {
   id: string;
@@ -49,6 +54,11 @@ export default function EntryReadPage() {
   const [loading, setLoading] = useState(true);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [analysisOpen, setAnalysisOpen] = useState(false);
+  const [analysisLoading, setAnalysisLoading] = useState(false);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [analysisResult, setAnalysisResult] =
+    useState<JungianAnalysisResult | null>(null);
 
   useEffect(() => {
     if (!id) {
@@ -80,6 +90,34 @@ export default function EntryReadPage() {
       }
     } finally {
       setDeleteLoading(false);
+    }
+  };
+
+  const handleAnalyze = async () => {
+    if (!id) return;
+    setAnalysisOpen(true);
+    setAnalysisLoading(true);
+    setAnalysisError(null);
+    setAnalysisResult(null);
+
+    try {
+      const res = await fetch(`/api/entries/${id}/analysis`, {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok || !data?.analysis) {
+        throw new Error(data?.error || "Analysis failed");
+      }
+      setAnalysisResult({
+        ...data.analysis,
+        lowConfidence: Boolean(data.lowConfidence),
+      });
+    } catch (error) {
+      setAnalysisError(
+        error instanceof Error ? error.message : "Failed to run analysis",
+      );
+    } finally {
+      setAnalysisLoading(false);
     }
   };
 
@@ -191,7 +229,7 @@ export default function EntryReadPage() {
           </div>
         </div>
 
-        {/* Right: AI Analysis placeholder */}
+        {/* Right: AI Analysis */}
         <div className="space-y-4">
           <div className="border-dashboard-stroke shadow-card-layered rounded-2xl border bg-white">
             <div className="border-dashboard-stroke bg-brand/5 flex items-center gap-2 border-b px-5 py-3.5">
@@ -202,20 +240,26 @@ export default function EntryReadPage() {
             </div>
             <div className="space-y-4 p-5">
               <p className="text-sm text-slate-600">
-                AI-powered insights, shadow projections, and archetypal imagery
-                coming soon.
+                Run a Jungian analysis grounded in your local knowledge base for
+                themes, projections, questions, and one shadow-work exercise.
               </p>
               <Button
                 variant="primary"
                 className="bg-brand hover:bg-brand/90 w-full gap-2 rounded-xl text-white"
+                onClick={handleAnalyze}
+                disabled={analysisLoading}
+              >
+                <Sparkles className="h-4 w-4" />
+                {analysisLoading ? "Analyzing..." : "Analyze with AI"}
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full gap-2 rounded-xl"
                 disabled
               >
                 <MessageCircle className="h-4 w-4" />
                 Dialogue with this Shadow
               </Button>
-              <p className="text-center text-xs text-slate-400">
-                Premium feature — coming soon
-              </p>
             </div>
           </div>
         </div>
@@ -243,6 +287,14 @@ export default function EntryReadPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AiAnalysisModal
+        open={analysisOpen}
+        onOpenChange={setAnalysisOpen}
+        loading={analysisLoading}
+        error={analysisError}
+        result={analysisResult}
+      />
     </div>
   );
 }
