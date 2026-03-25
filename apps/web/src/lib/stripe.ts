@@ -4,15 +4,16 @@ type CheckoutSessionParams = {
   priceId: string;
   userId: string;
   customerEmail: string;
+  mode?: "subscription" | "payment";
 };
 
 export async function createCheckoutSession({
   priceId,
   userId,
   customerEmail,
+  mode = "subscription",
 }: CheckoutSessionParams) {
   try {
-    // Call your API route that creates a Stripe checkout session
     const response = await fetch("/api/create-checkout-session", {
       method: "POST",
       headers: {
@@ -22,6 +23,7 @@ export async function createCheckoutSession({
         priceId,
         userId,
         customerEmail,
+        mode,
       }),
     });
 
@@ -35,6 +37,19 @@ export async function createCheckoutSession({
     console.error("Error creating checkout session:", error);
     throw error;
   }
+}
+
+export async function createBillingPortalSession(): Promise<{ url: string }> {
+  const response = await fetch("/api/create-portal-session", {
+    method: "POST",
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(
+      (err as { error?: string }).error || "Could not open billing portal",
+    );
+  }
+  return response.json();
 }
 
 export async function getCustomerSubscription(userId: string) {

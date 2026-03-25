@@ -3,6 +3,7 @@
 import React, {
   createContext,
   useContext,
+  useCallback,
   useEffect,
   useState,
   ReactNode,
@@ -12,6 +13,10 @@ import { supabase } from "@/lib/auth/supabase-client";
 
 interface CreditsContextProps {
   credits: number | null;
+  /** Stripe Price ID for the active subscription, if any */
+  subscriptionPriceId: string | null;
+  /** Raw Stripe subscription status (e.g. active, trialing, canceled) */
+  subscriptionStatus: string | null;
   loading: boolean;
   error: string | null;
   refreshCredits: () => Promise<void>;
@@ -27,12 +32,20 @@ const CreditsContext = createContext<CreditsContextProps | undefined>(
 export function CreditsProvider({ children }: { children: ReactNode }) {
   const { user, isAuthenticated } = useAuthContext();
   const [credits, setCredits] = useState<number | null>(null);
+  const [subscriptionPriceId, setSubscriptionPriceId] = useState<string | null>(
+    null,
+  );
+  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const refreshCredits = async () => {
+  const refreshCredits = useCallback(async () => {
     if (!isAuthenticated || !user?.id) {
       setCredits(null);
+      setSubscriptionPriceId(null);
+      setSubscriptionStatus(null);
       setLoading(false);
       setError(null);
       return;
@@ -44,7 +57,7 @@ export function CreditsProvider({ children }: { children: ReactNode }) {
 
       const { data, error: supabaseError } = await supabase
         .from("users")
-        .select("credits_available")
+        .select("credits_available, subscription_status, price_id")
         .eq("id", user.id)
         .single();
 
@@ -52,18 +65,24 @@ export function CreditsProvider({ children }: { children: ReactNode }) {
         console.error("Error fetching credits:", supabaseError);
         setError("Failed to fetch credits");
         setCredits(0); // Fallback to 0 credits
+        setSubscriptionPriceId(null);
+        setSubscriptionStatus(null);
         return;
       }
 
       setCredits((data?.credits_available as number) ?? 0);
+      setSubscriptionPriceId((data?.price_id as string) || null);
+      setSubscriptionStatus((data?.subscription_status as string) || null);
     } catch (err) {
       console.error("Error fetching credits:", err);
       setError("Failed to fetch credits");
       setCredits(0); // Fallback to 0 credits on any error
+      setSubscriptionPriceId(null);
+      setSubscriptionStatus(null);
     } finally {
       setLoading(false);
     }
-  };
+  }, [isAuthenticated, user?.id]);
 
   // Update credits optimistically
   const updateCredits = (newCredits: number) => {
@@ -88,11 +107,13 @@ export function CreditsProvider({ children }: { children: ReactNode }) {
 
   // Initial fetch when user changes
   useEffect(() => {
-    refreshCredits();
-  }, [isAuthenticated, user?.id]);
+    void refreshCredits();
+  }, [refreshCredits]);
 
   const value = {
     credits,
+    subscriptionPriceId,
+    subscriptionStatus,
     loading,
     error,
     refreshCredits,

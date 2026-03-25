@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { supabaseServer } from "@/lib/auth/supabase-server";
-import { getCreditLimitByPriceId } from "@/lib/stripe-config";
+import {
+  getCreditLimitByPriceId,
+  SHADOW_JOURNAL_ONE_TIME,
+  CHECKOUT_KIND_EXTRA_ANALYSIS,
+} from "@/lib/stripe-config";
 
 // Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
@@ -107,6 +111,59 @@ export async function POST(request: Request) {
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
+
+      if (session.mode === "payment") {
+        const kind = session.metadata?.checkoutKind;
+        const userId = session.metadata?.userId;
+        const expectedPrice = SHADOW_JOURNAL_ONE_TIME.EXTRA_ANALYSIS_PRICE_ID;
+        if (
+          kind === CHECKOUT_KIND_EXTRA_ANALYSIS &&
+          userId &&
+          expectedPrice
+        ) {
+          const full = await stripe.checkout.sessions.retrieve(session.id, {
+            expand: ["line_items.data.price"],
+          });
+          const paidPriceId =
+            full.line_items?.data[0]?.price &&
+            typeof full.line_items.data[0].price !== "string"
+              ? full.line_items.data[0].price.id
+              : null;
+          if (paidPriceId !== expectedPrice) {
+            console.error(
+              "One-time checkout price mismatch:",
+              paidPriceId,
+              expectedPrice,
+            );
+            break;
+          }
+          const { data: row, error: fetchErr } = await supabaseServer
+            .from("users")
+            .select("credits_available")
+            .eq("id", userId)
+            .single();
+          if (fetchErr) {
+            console.error("Failed to fetch user for credit top-up:", fetchErr);
+            break;
+          }
+          const add = SHADOW_JOURNAL_ONE_TIME.EXTRA_ANALYSIS_CREDITS;
+          const next =
+            ((row?.credits_available as number) ?? 0) + add;
+          const { error: upErr } = await supabaseServer
+            .from("users")
+            .update({ credits_available: next })
+            .eq("id", userId);
+          if (upErr) {
+            console.error("Failed to add one-time credits:", upErr);
+          } else {
+            console.log(
+              `Added ${add} credit(s) for user ${userId} (one-time purchase)`,
+            );
+          }
+        }
+        break;
+      }
+
       if (session.mode === "subscription" && session.subscription) {
         const subscription = await stripe.subscriptions.retrieve(
           session.subscription as string,
@@ -126,10 +183,17 @@ export async function POST(request: Request) {
 
     case "customer.subscription.deleted": {
       const deletedSubscription = event.data.object as Stripe.Subscription;
-      const deletedUserId = deletedSubscription.metadata.userId;
+      let deletedUserId = deletedSubscription.metadata.userId;
+      if (!deletedUserId) {
+        const { data } = await supabaseServer
+          .from("users")
+          .select("id")
+          .eq("stripe_subscription_id", deletedSubscription.id)
+          .single();
+        deletedUserId = data?.id;
+      }
 
       if (deletedUserId) {
-        // Update the user's subscription status and remove credits
         const { error } = await supabaseServer
           .from("users")
           .update({

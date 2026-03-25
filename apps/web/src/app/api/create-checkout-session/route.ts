@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { supabaseServer } from "@/lib/auth/supabase-server";
+import { SHADOW_JOURNAL_ONE_TIME } from "@/lib/stripe-config";
 
 type SessionCreateParams = Stripe.Checkout.SessionCreateParams;
 
@@ -9,12 +10,24 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
 
 export async function POST(request: Request) {
   try {
-    const { priceId, userId, customerEmail } = await request.json();
+    const body = await request.json();
+    const {
+      priceId,
+      userId,
+      customerEmail,
+      mode = "subscription",
+    } = body as {
+      priceId: string;
+      userId: string;
+      customerEmail: string;
+      mode?: "subscription" | "payment";
+    };
 
     console.log("Checkout session request:", {
       priceId,
       userId,
       customerEmail,
+      mode,
     });
 
     if (!priceId || !userId || !customerEmail) {
@@ -92,30 +105,54 @@ export async function POST(request: Request) {
       }
     }
 
-    // Create a checkout session
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-    const sessionParams: SessionCreateParams = {
-      customer: customerId,
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
+    const allowedOneTimePrice = SHADOW_JOURNAL_ONE_TIME.EXTRA_ANALYSIS_PRICE_ID;
+
+    let sessionParams: SessionCreateParams;
+
+    if (mode === "payment") {
+      if (!allowedOneTimePrice || priceId !== allowedOneTimePrice) {
+        return NextResponse.json(
+          { error: "Invalid one-time purchase" },
+          { status: 400 },
+        );
+      }
+      sessionParams = {
+        customer: customerId,
+        payment_method_types: ["card"],
+        line_items: [{ price: priceId, quantity: 1 }],
+        mode: "payment",
+        success_url: `${baseUrl}/dashboard/pricing?extra_analysis=success`,
+        cancel_url: `${baseUrl}/dashboard/pricing`,
+        metadata: {
+          userId,
+          checkoutKind: "extra_analysis",
         },
-      ],
-      mode: "subscription",
-      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/dashboard/pricing`,
-      metadata: {
-        userId,
-      },
-      subscription_data: {
+      };
+    } else {
+      sessionParams = {
+        customer: customerId,
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price: priceId,
+            quantity: 1,
+          },
+        ],
+        mode: "subscription",
+        success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${baseUrl}/dashboard/pricing`,
         metadata: {
           userId,
         },
-      },
-    };
+        subscription_data: {
+          metadata: {
+            userId,
+          },
+        },
+      };
+    }
 
     const session = await stripe.checkout.sessions.create(sessionParams);
 
