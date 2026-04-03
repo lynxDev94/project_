@@ -88,21 +88,23 @@ export const Footer = () => {
             substitute for medical therapy.
           </p>
           <div className="flex gap-6">
-            <a
-              href="#"
+            <Link
+              href="/privacy-policy"
               className="hover:text-slate-400"
             >
               Privacy Policy
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              href="/terms-of-service"
               className="hover:text-slate-400"
             >
               Terms of Service
-            </a>
+            </Link>
           </div>
         </div>
       </div>
     </footer>
   );
 };
+
+

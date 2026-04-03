@@ -67,6 +67,21 @@ function extractAssistantText(runResult: any): string {
   return "";
 }
 
+function errorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  return String(err);
+}
+
+/** OpenAI / provider quota or billing (429) bubbled through LangGraph. */
+function isModelQuotaError(err: unknown): boolean {
+  const m = errorMessage(err);
+  return (
+    m.includes("InsufficientQuotaError") ||
+    m.includes("exceeded your current quota") ||
+    /429/.test(m) && m.toLowerCase().includes("quota")
+  );
+}
+
 function buildAnalysisPrompt(entry: { title: string; body: string; tags: string[] }) {
   return [
     "Analyze this journal entry using Jungian framing and your KB tool.",
@@ -234,6 +249,18 @@ export async function POST(
       poolRefund = null;
     }
     console.error("Entry analysis POST error:", err);
+
+    if (isModelQuotaError(err)) {
+      return NextResponse.json(
+        {
+          error: "AI provider quota exceeded",
+          message:
+            "OpenAI reported insufficient quota or billing limits (often 429). Add billing or credits on your OpenAI account, or wait if you hit a rate limit. Your analysis credit was refunded.",
+        },
+        { status: 503 },
+      );
+    }
+
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },
