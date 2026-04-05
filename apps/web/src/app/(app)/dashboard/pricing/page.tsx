@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { DashboardPricing } from "../_components/DashboardPricing";
+import { DashboardPricing } from "../_components/dashboardPricing";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function DashboardPricingPage() {
