@@ -5,8 +5,8 @@ import Link from "next/link";
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/providers/Auth";
-import { SIDEBAR_NAV_ITEMS } from "./sidebarLayout.config";
-import { isSidebarItemActive } from "./sidebarLayout.utils";
+import { SIDEBAR_NAV_ITEMS } from "./config";
+import { isSidebarItemActive } from "./utils";
 
 function SidebarNavLinks({ pathname }: { pathname: string }) {
   return (

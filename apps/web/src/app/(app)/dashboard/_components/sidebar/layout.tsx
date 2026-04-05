@@ -11,8 +11,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { CreditBalance } from "@/components/credits/credit-balance";
-import { getSidebarPageTitle } from "./sidebarLayout.utils";
-import { SidebarNav } from "./sidebarNav";
+import { SidebarNav } from "./nav";
+import { getSidebarPageTitle } from "./utils";
 
 export function SidebarLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -37,10 +37,7 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent
-                  side="left"
-                  className="p-0"
-                >
+                <SheetContent side="left" className="p-0">
                   <SheetHeader className="sr-only">
                     <SheetTitle>Navigation</SheetTitle>
                   </SheetHeader>

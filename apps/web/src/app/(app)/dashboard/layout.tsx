@@ -1,4 +1,4 @@
-import { SidebarLayout } from "./_components/sidebarLayout";
+import { SidebarLayout } from "./_components/sidebar/layout";
 import { AuthGuard } from "./_components/authGuard";
 
 export default function DashboardLayout({
