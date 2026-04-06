@@ -3,6 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,36 +13,46 @@ import { Lock, Check, ArrowLeft } from "lucide-react";
 import { useAuthContext } from "@/providers/Auth";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
+const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters long."),
+    confirmPassword: z.string().min(1, "Please confirm your password."),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  });
+
+type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
+
 export default function ResetPasswordPage() {
   const router = useRouter();
   const { updatePassword, signOut } = useAuthContext();
 
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ResetPasswordFormValues>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const onSubmit = async (values: ResetPasswordFormValues) => {
     setError(null);
     setSuccess(null);
 
-    if (!password || !confirmPassword) {
-      setError("Please enter and confirm your new password.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
-    setIsLoading(true);
-    const { error } = await updatePassword(password);
+    const { error } = await updatePassword(values.password);
 
     if (error) {
-      setIsLoading(false);
       setError(
         error.message ||
           "Unable to reset password. The link may be invalid or expired.",
@@ -49,7 +62,6 @@ export default function ResetPasswordPage() {
 
     // For stricter security: clear any session established via the reset link
     await signOut();
-    setIsLoading(false);
 
     setSuccess("Your password has been updated. Please sign in with your new password.");
 
@@ -110,7 +122,7 @@ export default function ResetPasswordPage() {
 
           <form
             className="space-y-6"
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(onSubmit)}
           >
             <div className="space-y-2">
               <Label
@@ -123,11 +135,12 @@ export default function ResetPasswordPage() {
                 id="password"
                 type="password"
                 autoComplete="new-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                {...register("password")}
                 className="bg-background-dark/80 focus-visible:ring-brand rounded-xl border-white/10 pl-4 text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
-                required
               />
+              {errors.password && (
+                <p className="text-sm text-red-400">{errors.password.message}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -141,11 +154,14 @@ export default function ResetPasswordPage() {
                 id="confirm-password"
                 type="password"
                 autoComplete="new-password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                {...register("confirmPassword")}
                 className="bg-background-dark/80 focus-visible:ring-brand rounded-xl border-white/10 pl-4 text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
-                required
               />
+              {errors.confirmPassword && (
+                <p className="text-sm text-red-400">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
             </div>
 
             <Button
@@ -153,9 +169,9 @@ export default function ResetPasswordPage() {
               variant="primary"
               size="xl"
               className="w-full justify-center gap-2"
-              disabled={isLoading}
+              disabled={isSubmitting}
             >
-              {isLoading ? "Updating..." : "Update password"}
+              {isSubmitting ? "Updating..." : "Update password"}
             </Button>
           </form>
 

@@ -4,7 +4,6 @@ import React from "react";
 import { useAuthContext } from "@/providers/Auth";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// Layout component for pages that don't need the sidebar (auth pages)
 export default function AuthLayout({
   children,
 }: Readonly<{

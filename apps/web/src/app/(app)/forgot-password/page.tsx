@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,46 +12,53 @@ import { Mail, Lock, Check, ArrowRight, ArrowLeft } from "lucide-react";
 import { useAuthContext } from "@/providers/Auth";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
+const forgotPasswordSchema = z.object({
+  email: z.string().trim().email("Please enter a valid email address."),
+});
+
+type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
+
 export default function ForgotPasswordPage() {
   const { resetPassword } = useAuthContext();
-
-  const [email, setEmail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ForgotPasswordFormValues>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
+
+  const onSubmit = async (values: ForgotPasswordFormValues) => {
     setError(null);
     setSuccess(null);
 
-    if (!email) {
-      setError("Please enter your email address.");
-      return;
-    }
+    const { error: resetError } = await resetPassword(values.email.trim());
 
-    setIsLoading(true);
-    const { error } = await resetPassword(email.trim());
-    setIsLoading(false);
-
-    if (error) {
-      const message = error.message?.toLowerCase() ?? "";
+    if (resetError) {
+      const message = resetError.message?.toLowerCase() ?? "";
       if (message.includes("rate") && message.includes("limit")) {
         setError(
-          "We’ve already sent a reset email recently. Please check your inbox (and spam) and try again in a few minutes if needed.",
+          "We've already sent a reset email recently. Please check your inbox (and spam) and try again in a few minutes if needed.",
         );
       } else {
-        setError(error.message || "Something went wrong. Please try again.");
+        setError(
+          resetError.message || "Something went wrong. Please try again.",
+        );
       }
       return;
     }
 
-    setSuccess("If an account exists for that email, we’ve sent a reset link.");
+    setSuccess("If an account exists for that email, we've sent a reset link.");
   };
 
   return (
     <div className="bg-background-dark fixed inset-0 flex min-h-screen flex-col overflow-y-auto font-sans">
-      {/* Subtle gradient overlay */}
       <div
         className="pointer-events-none fixed inset-0 z-0 opacity-60"
         style={{
@@ -58,12 +68,10 @@ export default function ForgotPasswordPage() {
       />
 
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-12">
-        {/* Logo */}
         <Link
           href="/signin"
           className="mb-10 flex items-center gap-2 transition-opacity hover:opacity-90"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/brandLogo.png"
             alt="Shadow Journal"
@@ -74,7 +82,6 @@ export default function ForgotPasswordPage() {
           </span>
         </Link>
 
-        {/* Central card */}
         <div className="bg-surface-dark/95 w-full max-w-md rounded-2xl border border-white/10 p-8 shadow-xl shadow-black/20 backdrop-blur-sm">
           <h1 className="font-headline mb-2 text-3xl font-bold text-slate-100 md:text-4xl">
             Reclaim your <span className="italic">light.</span>
@@ -100,7 +107,7 @@ export default function ForgotPasswordPage() {
 
           <form
             className="space-y-6"
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(onSubmit)}
           >
             <div className="space-y-2">
               <Label
@@ -115,12 +122,13 @@ export default function ForgotPasswordPage() {
                   id="email"
                   type="email"
                   placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  {...register("email")}
                   className="bg-background-dark/80 focus-visible:ring-brand rounded-xl border-white/10 pl-12 text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
-                  required
                 />
               </div>
+              {errors.email && (
+                <p className="text-sm text-red-400">{errors.email.message}</p>
+              )}
             </div>
 
             <Button
@@ -128,10 +136,10 @@ export default function ForgotPasswordPage() {
               variant="primary"
               size="xl"
               className="w-full justify-center gap-2"
-              disabled={isLoading}
+              disabled={isSubmitting}
             >
-              {isLoading ? "Sending..." : "Send reset link"}
-              {!isLoading && <ArrowRight className="h-5 w-5" />}
+              {isSubmitting ? "Sending..." : "Send reset link"}
+              {!isSubmitting && <ArrowRight className="h-5 w-5" />}
             </Button>
           </form>
 
@@ -146,7 +154,6 @@ export default function ForgotPasswordPage() {
           </p>
         </div>
 
-        {/* Footer */}
         <div className="mt-12 flex flex-col items-center gap-4 text-center">
           <div className="flex items-center justify-center gap-6 font-sans text-[11px] tracking-wider text-slate-500 uppercase">
             <span className="flex items-center gap-1.5">
@@ -173,7 +180,7 @@ export default function ForgotPasswordPage() {
             </Link>
           </div>
           <p className="font-sans text-[11px] tracking-wider text-slate-600 uppercase">
-            © 2024 Shadow Journal
+            (c) 2026 Shadow Journal
           </p>
         </div>
       </div>

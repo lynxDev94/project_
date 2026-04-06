@@ -24,6 +24,7 @@
     "clean": "rm -rf .next dist"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@langchain/core": "^0.3.44",
     "@langchain/langgraph": "^0.2.63",
     "@langchain/langgraph-sdk": "^0.0.73",
@@ -57,6 +58,7 @@
     "nuqs": "^2.4.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.72.1",
     "react-markdown": "^10.0.1",
     "react-syntax-highlighter": "^15.5.0",
     "recharts": "^2.15.1",
