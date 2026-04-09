@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { InstallAppButton } from "@/components/install-app-button";
 
 const NAV_LINKS = [
   { href: "#philosophy", label: "Philosophy" },
@@ -34,6 +35,12 @@ export const Nav = () => {
               {label}
             </Link>
           ))}
+          <InstallAppButton
+            variant="ghost"
+            size="sm"
+            label="Install app"
+            className="text-slate-400 hover:bg-transparent hover:text-brand"
+          />
           <div className="flex items-center gap-3">
             <Link
               href="/signin"
@@ -77,6 +84,12 @@ export const Nav = () => {
                   {label}
                 </Link>
               ))}
+              <InstallAppButton
+                variant="outlineDark"
+                size="lg"
+                label="Install the app"
+                className="w-full rounded-full"
+              />
               <div className="mt-4 flex flex-col gap-4">
                 <Link
                   href="/signin"

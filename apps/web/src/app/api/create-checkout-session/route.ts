@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { supabaseServer } from "@/lib/auth/supabase-server";
-import { SHADOW_JOURNAL_ONE_TIME } from "@/lib/stripe-config";
+import {
+  SHADOW_JOURNAL_ONE_TIME,
+  SHADOW_JOURNAL_PRICE_IDS,
+} from "@/lib/stripe-config";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { applyRateLimit } from "@/lib/rate-limit";
 
 type SessionCreateParams = Stripe.Checkout.SessionCreateParams;
 
@@ -10,32 +15,36 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const supabase = await createSupabaseServerClient();
     const {
-      priceId,
-      userId,
-      customerEmail,
-      mode = "subscription",
-    } = body as {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const rateLimit = applyRateLimit({
+      key: `checkout:${user.id}`,
+      windowMs: 60_000,
+      maxRequests: 8,
+    });
+    if (!rateLimit.ok) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again shortly." },
+        { status: 429 },
+      );
+    }
+
+    const body = await request.json();
+    const { priceId, mode = "subscription" } = body as {
       priceId: string;
-      userId: string;
-      customerEmail: string;
       mode?: "subscription" | "payment";
     };
+    const userId = user.id;
+    const customerEmail = user.email;
 
-    console.log("Checkout session request:", {
-      priceId,
-      userId,
-      customerEmail,
-      mode,
-    });
-
-    if (!priceId || !userId || !customerEmail) {
-      console.error("Missing required parameters:", {
-        priceId,
-        userId,
-        customerEmail,
-      });
+    if (!priceId || !customerEmail) {
       return NextResponse.json(
         { error: "Missing required parameters" },
         { status: 400 },
@@ -109,6 +118,10 @@ export async function POST(request: Request) {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
     const allowedOneTimePrice = SHADOW_JOURNAL_ONE_TIME.EXTRA_ANALYSIS_PRICE_ID;
+    const allowedSubscriptionPrices = new Set([
+      SHADOW_JOURNAL_PRICE_IDS.REFLECT,
+      SHADOW_JOURNAL_PRICE_IDS.INITIATE,
+    ]);
 
     let sessionParams: SessionCreateParams;
 
@@ -132,6 +145,12 @@ export async function POST(request: Request) {
         },
       };
     } else {
+      if (!allowedSubscriptionPrices.has(priceId)) {
+        return NextResponse.json(
+          { error: "Invalid subscription price" },
+          { status: 400 },
+        );
+      }
       sessionParams = {
         customer: customerId,
         payment_method_types: ["card"],

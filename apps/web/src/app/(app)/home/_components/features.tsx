@@ -10,7 +10,7 @@ export const Features = () => {
     {
       icon: VenetianMask,
       title: "Jungian Lens, Not Diagnosis",
-      desc: "Get reflections through archetypes like Shadow, Child, Hero, and Lover to guide deeper self-inquiry.",
+      desc: "Carl Jung used archetypes (e.g. Shadow, Child, Hero) as mirrors for the psyche—not labels. We use that same reflective lens to deepen self-inquiry, not to diagnose.",
     },
     {
       icon: Lightbulb,
@@ -27,7 +27,8 @@ export const Features = () => {
             AI Journaling for Shadow Work & Self-Discovery
           </h2>
           <p className="mx-auto max-w-2xl text-center text-lg text-slate-400">
-            Write for 5-10 minutes. Get one focused reflection that helps you move forward.
+            Write for 5–10 minutes. One focused reflection, using language and
+            frames drawn from Carl Jung’s work on the unconscious and archetypes.
           </p>
         </div>
         <div className="grid gap-8 md:grid-cols-3">

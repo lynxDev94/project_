@@ -81,8 +81,6 @@ function PricingPageContent() {
       setLoading(tier);
       const { sessionId } = await createCheckoutSession({
         priceId,
-        userId: user.id,
-        customerEmail: user.email,
         mode: "subscription",
       });
       const { error } = await stripe.redirectToCheckout({ sessionId });
@@ -115,8 +113,6 @@ function PricingPageContent() {
       setLoading("extra");
       const { sessionId } = await createCheckoutSession({
         priceId: extraPriceId,
-        userId: user.id,
-        customerEmail: user.email,
         mode: "payment",
       });
       const { error } = await stripe.redirectToCheckout({ sessionId });

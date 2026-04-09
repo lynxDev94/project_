@@ -21,10 +21,10 @@ export default function Home() {
       <Hero />
       <Benefits />
       <Features />
-      <JournalDemo />
+      {/* <JournalDemo /> */}
       <Process />
-      <Privacy />
       <Pricing />
+      <Privacy />
       <Story />
       <FAQ />
       <Footer />

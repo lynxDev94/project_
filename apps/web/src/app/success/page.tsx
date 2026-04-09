@@ -43,7 +43,7 @@ export default function SuccessPage() {
 
       try {
         // Check user's subscription status
-        const response = await fetch(`/api/user/credits?userId=${user.id}`);
+        const response = await fetch("/api/user/credits");
         const data = await response.json();
 
         if (response.ok) {

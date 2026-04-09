@@ -1,4 +1,6 @@
-import { Sparkles, Settings, Eye } from "lucide-react";
+import Image from "next/image";
+
+const JOURNAL_SCREEN = "/images/journalScreen.png";
 
 export const JournalDemo = () => {
   return (
@@ -12,7 +14,16 @@ export const JournalDemo = () => {
             The Digital Altar
           </h2>
         </div>
-        <div className="relative mx-auto max-w-5xl">
+        <div className="relative mx-auto h-[250px] max-w-5xl overflow-hidden rounded-xl border border-white/10">
+          <Image
+            src={JOURNAL_SCREEN}
+            alt="Journal Demo"
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 1024px"
+          />
+        </div>
+        {/* <div className="relative mx-auto max-w-5xl">
           <div className="from-brand/30 to-background-dark absolute -inset-1 rounded-xl bg-gradient-to-r opacity-30 blur-2xl" />
           <div className="glass-panel relative overflow-hidden rounded-xl shadow-2xl">
             <div className="flex items-center justify-between border-b border-white/10 bg-white/5 px-6 py-4">
@@ -78,7 +89,7 @@ export const JournalDemo = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

@@ -25,7 +25,11 @@ export const Story = () => {
           </h2>
           <p className="mx-auto mb-10 max-w-2xl text-lg text-slate-300">
             Shadow Journal is designed to help you think clearly and go deeper,
-            without social pressure or performance.
+            without social pressure or performance. The name nods to Carl Jung’s
+            idea of the shadow—the traits and feelings we tend to push away—and
+            our AI reads your entries through that Jungian lens: patterns,
+            symbols, and archetypes as prompts for reflection, not a verdict on
+            who you are.
           </p>
 
           <div className="grid gap-4 text-left md:grid-cols-3">

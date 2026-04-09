@@ -57,7 +57,7 @@ export function CreditsProvider({ children }: { children: ReactNode }) {
 
       const { data, error: supabaseError } = await supabase
         .from("users")
-        .select("credits_available, subscription_status, price_id")
+        .select("subscription_credits, bonus_credits, subscription_status, price_id")
         .eq("id", user.id)
         .single();
 
@@ -70,7 +70,10 @@ export function CreditsProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      setCredits((data?.credits_available as number) ?? 0);
+      setCredits(
+        ((data?.subscription_credits as number | null) ?? 0) +
+          ((data?.bonus_credits as number | null) ?? 0),
+      );
       setSubscriptionPriceId((data?.price_id as string) || null);
       setSubscriptionStatus((data?.subscription_status as string) || null);
     } catch (err) {

@@ -11,7 +11,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "How does Jungian analysis work in practice?",
-    a: "You write or speak freely; our system looks for recurring symbols, themes, and emotional patterns. We surface connections to Jungian concepts (shadow, persona, archetypes) so you can reflect on them—we don't diagnose, we mirror.",
+    a: "You write or speak freely; we look for recurring symbols, themes, and emotional patterns. We relate those to ideas from Carl Jung’s analytical psychology—shadow, persona, archetypes—so you can reflect on them. We don’t diagnose; we mirror and suggest lines of inquiry.",
   },
   {
     q: "Can I use Shadow Journal alongside therapy?",

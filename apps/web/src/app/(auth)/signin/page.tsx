@@ -10,8 +10,18 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthContext } from "@/providers/Auth";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const LOGIN_BG_IMAGE = "/images/login-bg.png";
+
+const signinSchema = z.object({
+  email: z.string().trim().email("Please enter a valid email address."),
+  password: z.string().min(1, "Password is required"),
+});
+
+type SigninFormValues = z.infer<typeof signinSchema>;
 
 export default function SigninPage() {
   const { signIn, isAuthenticated } = useAuthContext();
@@ -21,13 +31,19 @@ export default function SigninPage() {
   const postAuthPath =
     raw?.startsWith("/dashboard") && !raw.startsWith("//") ? raw : "/dashboard";
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [showManualRedirect, setShowManualRedirect] = useState<boolean>(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SigninFormValues>({
+    resolver: zodResolver(signinSchema),
+    defaultValues: { email: "", password: "" },
+  });
 
   useEffect(() => {
     const urlMessage = searchParams.get("message");
@@ -47,21 +63,13 @@ export default function SigninPage() {
     }
   }, [isAuthenticated, router, postAuthPath]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (values: SigninFormValues) => {
     setError(null);
-
-    if (!email || !password) {
-      setError("Please enter both email and password");
-      return;
-    }
-
-    setIsLoading(true);
 
     try {
       const result = await signIn({
-        email,
-        password,
+        email: values.email.trim(),
+        password: values.password,
       });
 
       if (result.error) {
@@ -76,8 +84,6 @@ export default function SigninPage() {
     } catch (err) {
       console.error("Sign in error:", err);
       setError("An unexpected error occurred. Please try again.");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -162,6 +168,7 @@ export default function SigninPage() {
                 <span>Success! We're redirecting you to the dashboard...</span>
                 {showManualRedirect && (
                   <Button
+                    type="button"
                     onClick={() => router.push(postAuthPath)}
                     variant="outline"
                     className="mt-2 border-green-300 text-green-700 hover:bg-green-100"
@@ -175,7 +182,7 @@ export default function SigninPage() {
 
           <form
             className="space-y-6"
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(onSubmit)}
           >
             <div className="space-y-2">
               <Label
@@ -189,13 +196,16 @@ export default function SigninPage() {
                 <Input
                   id="email"
                   type="email"
+                  autoComplete="email"
                   placeholder="name@example.com"
                   className="bg-surface-dark focus-visible:ring-brand rounded-xl border-white/10 pl-12 text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
+                  aria-invalid={!!errors.email}
+                  {...register("email")}
                 />
               </div>
+              {errors.email && (
+                <p className="text-sm text-red-400">{errors.email.message}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -217,13 +227,16 @@ export default function SigninPage() {
                 <Lock className="absolute top-1/2 left-4 z-10 h-5 w-5 -translate-y-1/2 text-slate-500" />
                 <PasswordInput
                   id="password"
+                  autoComplete="current-password"
                   placeholder="Enter your password"
-                  value={password}
                   className="bg-surface-dark focus-visible:ring-brand rounded-xl border-white/10 pl-12 text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                  aria-invalid={!!errors.password}
+                  {...register("password")}
                 />
               </div>
+              {errors.password && (
+                <p className="text-sm text-red-400">{errors.password.message}</p>
+              )}
             </div>
 
             {error && (
@@ -237,9 +250,9 @@ export default function SigninPage() {
               variant="primary"
               size="xl"
               className="w-full"
-              disabled={isLoading || isSuccess}
+              disabled={isSubmitting || isSuccess}
             >
-              {isLoading
+              {isSubmitting
                 ? "Signing in..."
                 : isSuccess
                   ? "Signed In Successfully"

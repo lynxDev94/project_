@@ -2,15 +2,11 @@ import { supabase } from "@/lib/auth/supabase-client";
 
 type CheckoutSessionParams = {
   priceId: string;
-  userId: string;
-  customerEmail: string;
   mode?: "subscription" | "payment";
 };
 
 export async function createCheckoutSession({
   priceId,
-  userId,
-  customerEmail,
   mode = "subscription",
 }: CheckoutSessionParams) {
   try {
@@ -21,8 +17,6 @@ export async function createCheckoutSession({
       },
       body: JSON.stringify({
         priceId,
-        userId,
-        customerEmail,
         mode,
       }),
     });

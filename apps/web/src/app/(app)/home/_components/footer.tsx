@@ -38,7 +38,7 @@ export const Footer = () => {
               democratization of depth psychology tools. We believe everyone
               deserves a mirror to help them understand themselves better.
             </p>
-            <div className="flex gap-4">
+            {/* <div className="flex gap-4">
               <a
                 href={`mailto:${supportEmail}`}
                 className="hover:bg-brand/20 flex h-10 w-10 items-center justify-center rounded-full bg-white/5 transition-colors"
@@ -46,11 +46,11 @@ export const Footer = () => {
               >
                 <Mail className="h-4 w-4 text-slate-400" />
               </a>
-            </div>
+            </div> */}
             <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
               <a
                 href={`mailto:${supportEmail}`}
-                className="text-slate-400 hover:text-brand transition-colors"
+                className="hover:text-brand text-slate-400 transition-colors"
               >
                 {supportEmail}
               </a>
@@ -138,5 +138,3 @@ export const Footer = () => {
     </footer>
   );
 };
-
-

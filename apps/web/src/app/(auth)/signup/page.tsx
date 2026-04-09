@@ -11,18 +11,20 @@ import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/providers/Auth";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const SIGNUP_BG_IMAGE = "/images/signup-bg.png";
 
 const signupSchema = z
   .object({
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
+    firstName: z.string().trim().min(1, "First name is required"),
+    lastName: z.string().trim().min(1, "Last name is required"),
     companyName: z.string().optional(),
     termsAccepted: z.boolean().refine((val) => val === true, {
       message: "You must accept the terms to continue",
     }),
-    email: z.string().email("Please enter a valid email address"),
+    email: z.string().trim().email("Please enter a valid email address"),
     password: z
       .string()
       .min(8, "Password must be at least 8 characters")
@@ -41,67 +43,38 @@ type SignupFormValues = z.infer<typeof signupSchema>;
 export default function SignupPage() {
   const { signUp } = useAuthContext();
   const router = useRouter();
+  const [authError, setAuthError] = useState<string | null>(null);
 
-  const [formValues, setFormValues] = useState<Partial<SignupFormValues>>({
-    firstName: "",
-    lastName: "",
-    companyName: "",
-    termsAccepted: false,
-    email: "",
-    password: "",
-    confirmPassword: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignupFormValues>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      companyName: "",
+      termsAccepted: false,
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof SignupFormValues, string>>
-  >({});
-  const [authError, setAuthError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const validateForm = () => {
-    try {
-      signupSchema.parse(formValues);
-      setErrors({});
-      return true;
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const newErrors: Partial<Record<keyof SignupFormValues, string>> = {};
-        error.errors.forEach((err) => {
-          if (err.path[0]) {
-            newErrors[err.path[0] as keyof SignupFormValues] = err.message;
-          }
-        });
-        setErrors(newErrors);
-      }
-      return false;
-    }
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormValues((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (values: SignupFormValues) => {
     setAuthError(null);
 
-    if (!validateForm()) return;
-
-    setIsLoading(true);
-
     try {
+      const company = values.companyName?.trim();
       const { error } = await signUp({
-        email: formValues.email!,
-        password: formValues.password!,
+        email: values.email.trim(),
+        password: values.password,
         metadata: {
-          first_name: formValues.firstName,
-          last_name: formValues.lastName,
-          company_name: formValues.companyName || null,
-          name: `${formValues.firstName} ${formValues.lastName}`.trim(),
+          first_name: values.firstName.trim(),
+          last_name: values.lastName.trim(),
+          company_name: company && company.length > 0 ? company : null,
+          name: `${values.firstName.trim()} ${values.lastName.trim()}`.trim(),
         },
       });
 
@@ -113,11 +86,9 @@ export default function SignupPage() {
       router.push(
         "/signin?message=Please check your email to confirm your account",
       );
-    } catch (error) {
-      console.error("Signup error:", error);
+    } catch (err) {
+      console.error("Signup error:", err);
       setAuthError("An unexpected error occurred. Please try again.");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -209,7 +180,7 @@ export default function SignupPage() {
 
           <form
             className="space-y-6"
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(onSubmit)}
           >
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -221,16 +192,15 @@ export default function SignupPage() {
                 </Label>
                 <Input
                   id="firstName"
-                  name="firstName"
+                  autoComplete="given-name"
                   className="bg-surface-dark focus-visible:ring-brand rounded-xl border-white/10 font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
                   type="text"
                   placeholder="John"
-                  value={formValues.firstName || ""}
-                  onChange={handleInputChange}
                   aria-invalid={!!errors.firstName}
+                  {...register("firstName")}
                 />
                 {errors.firstName && (
-                  <p className="text-destructive text-sm">{errors.firstName}</p>
+                  <p className="text-destructive text-sm">{errors.firstName.message}</p>
                 )}
               </div>
               <div className="space-y-2">
@@ -242,16 +212,15 @@ export default function SignupPage() {
                 </Label>
                 <Input
                   id="lastName"
-                  name="lastName"
+                  autoComplete="family-name"
                   type="text"
                   placeholder="Doe"
-                  value={formValues.lastName || ""}
-                  onChange={handleInputChange}
                   aria-invalid={!!errors.lastName}
                   className="bg-surface-dark focus-visible:ring-brand rounded-xl border-white/10 font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
+                  {...register("lastName")}
                 />
                 {errors.lastName && (
-                  <p className="text-destructive text-sm">{errors.lastName}</p>
+                  <p className="text-destructive text-sm">{errors.lastName.message}</p>
                 )}
               </div>
             </div>
@@ -266,16 +235,15 @@ export default function SignupPage() {
               <div className="relative">
                 <Input
                   id="email"
-                  name="email"
                   type="email"
+                  autoComplete="email"
                   placeholder="name@example.com"
-                  value={formValues.email || ""}
-                  onChange={handleInputChange}
                   className="bg-surface-dark focus-visible:ring-brand rounded-xl border-white/10 font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
                   aria-invalid={!!errors.email}
+                  {...register("email")}
                 />
                 {errors.email && (
-                  <p className="text-destructive text-sm">{errors.email}</p>
+                  <p className="text-destructive text-sm">{errors.email.message}</p>
                 )}
               </div>
             </div>
@@ -290,15 +258,14 @@ export default function SignupPage() {
               <div className="relative">
                 <PasswordInput
                   id="password"
-                  name="password"
+                  autoComplete="new-password"
                   placeholder="Create a password"
-                  value={formValues.password || ""}
-                  onChange={handleInputChange}
                   className="bg-surface-dark focus-visible:ring-brand rounded-xl border-white/10 font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
                   aria-invalid={!!errors.password}
+                  {...register("password")}
                 />
                 {errors.password && (
-                  <p className="text-destructive text-sm">{errors.password}</p>
+                  <p className="text-destructive text-sm">{errors.password.message}</p>
                 )}
               </div>
             </div>
@@ -313,16 +280,15 @@ export default function SignupPage() {
               <div className="relative">
                 <PasswordInput
                   id="confirmPassword"
-                  name="confirmPassword"
+                  autoComplete="new-password"
                   placeholder="Confirm your password"
-                  value={formValues.confirmPassword || ""}
-                  onChange={handleInputChange}
                   className="bg-surface-dark focus-visible:ring-brand rounded-xl border-white/10 font-sans text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
                   aria-invalid={!!errors.confirmPassword}
+                  {...register("confirmPassword")}
                 />
                 {errors.confirmPassword && (
                   <p className="text-destructive text-sm">
-                    {errors.confirmPassword}
+                    {errors.confirmPassword.message}
                   </p>
                 )}
               </div>
@@ -330,16 +296,9 @@ export default function SignupPage() {
             <label className="flex cursor-pointer items-start gap-3">
               <input
                 type="checkbox"
-                name="termsAccepted"
-                checked={!!formValues.termsAccepted}
-                onChange={(e) =>
-                  setFormValues((prev) => ({
-                    ...prev,
-                    termsAccepted: e.target.checked,
-                  }))
-                }
                 aria-invalid={!!errors.termsAccepted}
                 className="bg-surface-dark text-brand focus:ring-brand mt-1 h-4 w-4 rounded border-white/20"
+                {...register("termsAccepted")}
               />
               <span className="font-sans text-sm text-slate-400">
                 I agree to the{" "}
@@ -361,7 +320,7 @@ export default function SignupPage() {
             </label>
             {errors.termsAccepted && (
               <p className="text-destructive mt-1 text-sm">
-                {errors.termsAccepted}
+                {errors.termsAccepted.message}
               </p>
             )}
 
@@ -376,9 +335,9 @@ export default function SignupPage() {
               variant="primary"
               size="xl"
               className="w-full"
-              disabled={isLoading}
+              disabled={isSubmitting}
             >
-              {isLoading ? "Creating Account..." : "Create Account"}
+              {isSubmitting ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
 

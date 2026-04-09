@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const scrollIn = {
   initial: { opacity: 0, y: 28 },
@@ -7,10 +8,10 @@ const scrollIn = {
   transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] },
 };
 
-const IMG_FOREST =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuAcEdce9vHsAw1z3zfI4M_RJBz0hYmtm-x5dXfMsTpQV7o_yClAKJUcZ0dLUOFY8Md8IaAGB37N4AQfGzT1o1iI1tnEHmdu4MTJ8qiuydFeA4aSTfT2oAqB1FQ-ACUwFI0Kef4ZYIelfxG6NuIu1DJnCHSaXxdMFXZzdlCaYDufC_4QRgeKv3FOLf61bLTpIypJtp-pSkKyge2T-prFNUfaNeQuyPPMCwcgvsPmx1qBGep8AgT8lgHMNyYavmf7EMvQuvao3DTKLuk";
-const IMG_MIRROR =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuBJh9emEfDLWpvY1AB5V6xP8cWWANhWFtE_ob9mqM6xoJQelv4nPuN6Ou0tIB-b2vg3PPwi6Qgz2g-AMsjFi4tXsZihqWjZ1b8_qcUttq-jd6ckGPvkdCENnTT4574VivNY98JZeUIq233BgjVHH5gyFKa4hwps6fyDle5K5K8o8CwzcPAPe8wm13vwfSjG_B6fbBpvgpYGlO4uIVGddHKc9qYXkgiE0VxZutPsSekSW5pN9rp32IGXXr7kRruPGIjk3GKNMmPW14Y";
+/** Self-hosted (Unsplash-sourced); replace under public/images/home for your brand. */
+const IMG_FOREST = "/images/home/process-forest.jpg";
+// const IMG_MIRROR = "/images/home/process-reflection.jpg";
+const JOURNAL_SCREEN = "/images/journalScreen.png";
 
 export const Process = () => {
   return (
@@ -33,7 +34,8 @@ export const Process = () => {
               The Process
             </h2>
             <p className="mb-12 text-lg text-slate-400">
-              A simple loop: write privately, reflect clearly, repeat consistently.
+              A simple loop: write privately, reflect clearly, repeat
+              consistently.
             </p>
             <div className="border-brand/20 relative space-y-24 border-l pl-8">
               <div className="from-brand via-brand/50 absolute top-0 -left-px h-full w-0.5 bg-gradient-to-b to-transparent" />
@@ -53,8 +55,8 @@ export const Process = () => {
                   Get One Focused Reflection
                 </h3>
                 <p className="text-slate-400">
-                  Run AI analysis to surface patterns, blind spots, and one clear
-                  direction for your next step.
+                  Run AI analysis to surface patterns, blind spots, and one
+                  clear direction for your next step.
                 </p>
               </div>
               <div className="relative">
@@ -70,11 +72,18 @@ export const Process = () => {
             </div>
           </div>
           <div className="hidden items-center justify-center md:flex">
-            <div className="relative aspect-[4/5] w-full max-w-md overflow-hidden rounded-2xl border border-white/10">
-              <img
+            <div className="relative h-[250px] w-full max-w-md overflow-hidden rounded-2xl border border-2 border-white/10">
+              {/* <img
                 alt="Woman looking into a mirror reflection representing self-discovery"
                 className="h-full w-full object-cover grayscale transition-all duration-700 hover:grayscale-0"
                 src={IMG_MIRROR}
+              /> */}
+              <Image
+                src={JOURNAL_SCREEN}
+                alt="Journal analysis preview"
+                fill
+                className="object-cover object-left grayscale transition-all duration-700 hover:grayscale-0"
+                sizes="(max-width: 1024px) 100vw, 448px"
               />
               <div className="absolute bottom-4 left-4 rounded-xl border border-white/10 bg-white/5 px-6 py-4 backdrop-blur-xl">
                 <p className="font-headline text-brand text-3xl font-bold italic">

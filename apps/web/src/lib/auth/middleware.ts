@@ -1,7 +1,14 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const NO_AUTH_PATHS = ["/signin", "/signup", "/api/auth"];
+const NO_AUTH_PATHS = [
+  "/signin",
+  "/signup",
+  "/forgot-password",
+  "/reset-password",
+  "/api/auth",
+  "/api/webhooks/stripe",
+];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({

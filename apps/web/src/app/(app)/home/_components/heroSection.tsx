@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { HeroJournalSVG } from "./heroJournalSvg";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -16,6 +16,8 @@ const heroItem = {
 const HERO_BG_IMAGE = "/images/hero-writing.png";
 
 export const Hero = () => {
+  const reduceMotion = useReducedMotion();
+
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden pt-20">
       <div
@@ -46,24 +48,34 @@ export const Hero = () => {
       />
       <motion.div
         className="bg-brand/20 absolute top-[25%] left-[15%] h-64 w-64 rounded-full blur-[80px]"
-        animate={{
-          opacity: [0.06, 0.12, 0.06],
-          scale: [1, 1.15, 1],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        animate={
+          reduceMotion
+            ? { opacity: 0.09, scale: 1 }
+            : { opacity: [0.06, 0.12, 0.06], scale: [1, 1.15, 1] }
+        }
+        transition={
+          reduceMotion
+            ? { duration: 0 }
+            : { duration: 10, repeat: Infinity, ease: "easeInOut" }
+        }
       />
       <motion.div
         className="bg-brand/15 absolute right-[20%] bottom-[30%] h-48 w-48 rounded-full blur-[60px]"
-        animate={{
-          opacity: [0.08, 0.14, 0.08],
-          scale: [1, 1.2, 1],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 2,
-        }}
+        animate={
+          reduceMotion
+            ? { opacity: 0.11, scale: 1 }
+            : { opacity: [0.08, 0.14, 0.08], scale: [1, 1.2, 1] }
+        }
+        transition={
+          reduceMotion
+            ? { duration: 0 }
+            : {
+                duration: 8,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 2,
+              }
+        }
       />
       <motion.div
         className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-6 text-center"
@@ -94,8 +106,9 @@ export const Hero = () => {
           className="mx-auto mb-12 max-w-2xl text-lg leading-relaxed text-slate-400 md:text-xl"
           variants={heroItem}
         >
-          Write what happened. Get AI-guided Jungian reflections in minutes so you
-          can spot triggers, recurring themes, and your next step.
+          Write what happened. Get reflections informed by Carl Jung’s analytical
+          psychology—shadow, archetypes, recurring themes—so you can spot
+          triggers and your next step.
         </motion.p>
         <motion.div
           className="mb-8 w-full max-w-[200px] md:max-w-[280px]"
@@ -106,7 +119,7 @@ export const Hero = () => {
           <HeroJournalSVG className="w-full drop-shadow-[0_8px_32px_rgba(0,0,0,0.4)]" />
         </motion.div>
         <motion.div
-          className="flex flex-col items-center justify-center gap-6 sm:flex-row"
+          className="flex flex-col items-center justify-center gap-6 sm:flex-row sm:flex-wrap"
           variants={heroItem}
         >
           <Button
@@ -127,6 +140,7 @@ export const Hero = () => {
           >
             <Link href="#process">How It Works</Link>
           </Button>
+          {/* <InstallAppButton variant="outlineDark" size="xl" label="Install as app" /> */}
         </motion.div>
       </motion.div>
     </section>
