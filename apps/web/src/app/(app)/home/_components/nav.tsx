@@ -3,7 +3,12 @@
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { InstallAppButton } from "@/components/install-app-button";
 
 const NAV_LINKS = [
@@ -16,7 +21,10 @@ export const Nav = () => {
   return (
     <nav className="bg-background-dark/80 fixed top-0 right-0 left-0 z-50 border-b border-white/5 backdrop-blur-md">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-        <Link href="/home" className="flex items-center gap-2">
+        <Link
+          href="/"
+          className="flex items-center gap-2"
+        >
           <img
             src="/images/brandLogo.png"
             alt="Shadow Journal"
@@ -31,7 +39,11 @@ export const Nav = () => {
         {/* Desktop links */}
         <div className="hidden items-center gap-8 text-sm font-medium text-slate-400 md:flex">
           {NAV_LINKS.map(({ href, label }) => (
-            <Link key={href} href={href} className="hover:text-brand transition-colors">
+            <Link
+              key={href}
+              href={href}
+              className="hover:text-brand transition-colors"
+            >
               {label}
             </Link>
           ))}
@@ -39,7 +51,7 @@ export const Nav = () => {
             variant="ghost"
             size="sm"
             label="Install app"
-            className="text-slate-400 hover:bg-transparent hover:text-brand"
+            className="hover:text-brand text-slate-400 hover:bg-transparent"
           />
           <div className="flex items-center gap-3">
             <Link
@@ -71,7 +83,7 @@ export const Nav = () => {
           </SheetTrigger>
           <SheetContent
             side="left"
-            className="border-white/10 bg-background-dark p-0 [&>button]:text-white [&>button]:opacity-100 [&>button]:hover:text-white"
+            className="bg-background-dark border-white/10 p-0 [&>button]:text-white [&>button]:opacity-100 [&>button]:hover:text-white"
           >
             <SheetTitle className="sr-only">Navigation</SheetTitle>
             <nav className="flex flex-col gap-8 px-8 pt-16 pb-8">
@@ -79,7 +91,7 @@ export const Nav = () => {
                 <Link
                   key={href}
                   href={href}
-                  className="text-lg font-medium text-slate-300 transition-colors hover:text-brand"
+                  className="hover:text-brand text-lg font-medium text-slate-300 transition-colors"
                 >
                   {label}
                 </Link>

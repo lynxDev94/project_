@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.5.1",
-  "description": "Agent with Auth and Payments application with LangGraph agents and Next.js UI",
+  "description": "Shadow Journal web application with Supabase, Stripe, and guided AI analysis",
   "workspaces": [
     "apps/*"
   ],
@@ -16,7 +16,7 @@
     "format": "pnpm -r format",
     "format:check": "pnpm -r format:check",
     "test": "pnpm -r test",
-    "test:int": "pnpm -r test:int",
+    "test:int": "pnpm -r --if-present test:int",
     "clean": "pnpm -r clean && rm -rf node_modules",
     "setup:db": "echo '🗄️  Setting up Supabase database schema...' && echo '' && echo '⚡ Quick setup (requires .env files configured):' && echo 'npx supabase db execute --file supabase-schema.sql --project-ref YOUR_PROJECT_REF' && echo '' && echo '📋 Manual setup (recommended):' && echo '1. Open Supabase Dashboard > SQL Editor' && echo '2. Copy and paste contents of supabase-schema.sql' && echo '3. Click Run' && echo '' && echo '💡 Find your project ref in your Supabase URL: https://YOUR_PROJECT_REF.supabase.co'",
     "web:dev": "pnpm --filter web dev",
@@ -39,13 +39,12 @@
     "url": "git+https://github.com/langchain-ai/fullstack-chat-repo.git"
   },
   "keywords": [
-    "langgraph",
-    "langchain",
     "nextjs",
     "typescript",
-    "chat",
     "ai",
-    "agents",
+    "journal",
+    "supabase",
+    "stripe",
     "monorepo"
   ],
   "license": "MIT"
