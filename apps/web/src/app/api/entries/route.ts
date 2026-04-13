@@ -70,9 +70,10 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const title =
-      typeof body.title === "string" ? body.title.trim() || "Untitled reflection" : "Untitled reflection";
-    const entryBody =
-      typeof body.body === "string" ? body.body : "";
+      typeof body.title === "string"
+        ? body.title.trim() || "Untitled reflection"
+        : "Untitled reflection";
+    const entryBody = typeof body.body === "string" ? body.body : "";
     const tags = Array.isArray(body.tags)
       ? body.tags
           .filter((t: unknown) => typeof t === "string" && t.trim())

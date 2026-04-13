@@ -47,11 +47,15 @@ function isModelQuotaError(err: unknown): boolean {
   return (
     m.includes("InsufficientQuotaError") ||
     m.includes("exceeded your current quota") ||
-    /429/.test(m) && m.toLowerCase().includes("quota")
+    (/429/.test(m) && m.toLowerCase().includes("quota"))
   );
 }
 
-function buildAnalysisPrompt(entry: { title: string; body: string; tags: string[] }) {
+function buildAnalysisPrompt(entry: {
+  title: string;
+  body: string;
+  tags: string[];
+}) {
   return [
     "Analyze this journal entry using Jungian framing.",
     "Follow the required JSON output format exactly with valid JSON object output.",
@@ -71,14 +75,20 @@ type LangGraphAnalysisResult = {
   totalTokens: number;
 };
 
-function estimateCostUsd(model: string, inputTokens: number, outputTokens: number): number {
+function estimateCostUsd(
+  model: string,
+  inputTokens: number,
+  outputTokens: number,
+): number {
   // Approximate rates; tune to your provider/model pricing.
   const rates: Record<string, { input: number; output: number }> = {
     "gpt-4o-mini": { input: 0.15 / 1_000_000, output: 0.6 / 1_000_000 },
     "gpt-4.1-mini": { input: 0.4 / 1_000_000, output: 1.6 / 1_000_000 },
   };
   const selected = rates[model] ?? rates["gpt-4o-mini"];
-  return Number((inputTokens * selected.input + outputTokens * selected.output).toFixed(8));
+  return Number(
+    (inputTokens * selected.input + outputTokens * selected.output).toFixed(8),
+  );
 }
 
 function getContentFromMessage(content: unknown): string {
@@ -103,21 +113,40 @@ function getContentFromMessage(content: unknown): string {
 
 function parseTokenUsage(message: unknown) {
   if (!message || typeof message !== "object") {
-    return { inputTokens: 0, outputTokens: 0, totalTokens: 0, model: "langgraph-agent" };
+    return {
+      inputTokens: 0,
+      outputTokens: 0,
+      totalTokens: 0,
+      model: "langgraph-agent",
+    };
   }
   const m = message as Record<string, unknown>;
   const usage = (m.usage_metadata as Record<string, unknown> | undefined) ?? {};
-  const responseMeta = (m.response_metadata as Record<string, unknown> | undefined) ?? {};
-  const tokenUsage = (responseMeta.token_usage as Record<string, unknown> | undefined) ?? {};
+  const responseMeta =
+    (m.response_metadata as Record<string, unknown> | undefined) ?? {};
+  const tokenUsage =
+    (responseMeta.token_usage as Record<string, unknown> | undefined) ?? {};
 
   const inputTokens =
-    Number(usage.input_tokens ?? tokenUsage.prompt_tokens ?? tokenUsage.input_tokens ?? 0) || 0;
+    Number(
+      usage.input_tokens ??
+        tokenUsage.prompt_tokens ??
+        tokenUsage.input_tokens ??
+        0,
+    ) || 0;
   const outputTokens =
     Number(
-      usage.output_tokens ?? tokenUsage.completion_tokens ?? tokenUsage.output_tokens ?? 0,
+      usage.output_tokens ??
+        tokenUsage.completion_tokens ??
+        tokenUsage.output_tokens ??
+        0,
     ) || 0;
   const totalTokens =
-    Number(usage.total_tokens ?? tokenUsage.total_tokens ?? inputTokens + outputTokens) || 0;
+    Number(
+      usage.total_tokens ??
+        tokenUsage.total_tokens ??
+        inputTokens + outputTokens,
+    ) || 0;
   const model =
     (responseMeta.model_name as string | undefined) ||
     (responseMeta.model as string | undefined) ||
@@ -167,7 +196,8 @@ async function runLangGraphAnalysis(input: {
   accessToken: string;
 }): Promise<LangGraphAnalysisResult> {
   const apiUrl =
-    process.env.LANGGRAPH_API_URL?.trim() || process.env.NEXT_PUBLIC_API_URL?.trim();
+    process.env.LANGGRAPH_API_URL?.trim() ||
+    process.env.NEXT_PUBLIC_API_URL?.trim();
   const assistantId =
     process.env.LANGGRAPH_ASSISTANT_ID?.trim() ||
     process.env.NEXT_PUBLIC_ASSISTANT_ID?.trim() ||
@@ -186,16 +216,20 @@ async function runLangGraphAnalysis(input: {
   });
 
   const thread = await (client.threads as any).create();
-  const runResult = await (client.runs as any).wait(thread.thread_id, assistantId, {
-    input: {
-      messages: [{ role: "user", content: input.prompt }],
-    },
-    config: {
-      configurable: {
-        analysisMode: true,
+  const runResult = await (client.runs as any).wait(
+    thread.thread_id,
+    assistantId,
+    {
+      input: {
+        messages: [{ role: "user", content: input.prompt }],
+      },
+      config: {
+        configurable: {
+          analysisMode: true,
+        },
       },
     },
-  });
+  );
 
   return extractAssistantFromRun(runResult);
 }
@@ -235,7 +269,9 @@ export async function POST(
 
     userIdForRefund = user.id;
 
-    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      "unknown";
     const userWindowLimit = applyRateLimit({
       key: `analysis:user:${user.id}`,
       windowMs: 60_000,
@@ -248,7 +284,9 @@ export async function POST(
     });
     if (!userWindowLimit.ok || !ipWindowLimit.ok) {
       return NextResponse.json(
-        { error: "Too many analysis requests. Please wait a minute and retry." },
+        {
+          error: "Too many analysis requests. Please wait a minute and retry.",
+        },
         { status: 429 },
       );
     }

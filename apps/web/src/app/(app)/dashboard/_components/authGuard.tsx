@@ -4,11 +4,7 @@ import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthContext } from "@/providers/Auth";
 
-export function AuthGuard({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuthContext();
   const router = useRouter();
   const pathname = usePathname();
@@ -21,8 +17,8 @@ export function AuthGuard({
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-dashboard-main-bg">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand border-t-transparent" />
+      <div className="bg-dashboard-main-bg flex h-screen items-center justify-center">
+        <div className="border-brand h-8 w-8 animate-spin rounded-full border-2 border-t-transparent" />
       </div>
     );
   }

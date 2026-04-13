@@ -5,7 +5,11 @@ import { countJournalWords } from "@/lib/journal-word-count";
 import { MIN_WORDS_FOR_ANALYSIS } from "@/lib/constants";
 import { PROMPT_CATEGORIES } from "../deps";
 import { shuffleArray } from "@/lib/utils";
-import { analyzeJournalEntry, fetchJournalEntryById, persistJournalEntry } from "../api";
+import {
+  analyzeJournalEntry,
+  fetchJournalEntryById,
+  persistJournalEntry,
+} from "../api";
 import type { JournalTag } from "../types";
 import type { JungianAnalysisResult } from "@/components/journal/AiAnalysisModal";
 

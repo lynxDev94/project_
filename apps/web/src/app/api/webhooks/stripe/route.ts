@@ -173,12 +173,14 @@ export async function POST(request: Request) {
               .eq("id", userId)
               .single();
             if (fetchErr) {
-              console.error("Failed to fetch user for credit top-up:", fetchErr);
+              console.error(
+                "Failed to fetch user for credit top-up:",
+                fetchErr,
+              );
               break;
             }
             const add = SHADOW_JOURNAL_ONE_TIME.EXTRA_ANALYSIS_CREDITS;
-            const nextBonus =
-              ((row?.bonus_credits as number) ?? 0) + add;
+            const nextBonus = ((row?.bonus_credits as number) ?? 0) + add;
             const { error: upErr } = await supabaseServer
               .from("users")
               .update({ bonus_credits: nextBonus })

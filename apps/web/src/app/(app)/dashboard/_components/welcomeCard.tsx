@@ -46,8 +46,8 @@ export function WelcomeCard({
             Welcome
           </h2>
           <p className="font-headline text-lg leading-relaxed text-slate-700 italic">
-            &ldquo;Your visions will become clear only when you can look into your
-            own heart.&rdquo;
+            &ldquo;Your visions will become clear only when you can look into
+            your own heart.&rdquo;
           </p>
           <p className="mt-2 text-xs font-semibold tracking-wider text-slate-500 uppercase">
             — Carl Jung
@@ -56,14 +56,20 @@ export function WelcomeCard({
 
         <div className="mt-6 flex flex-wrap items-center gap-6">
           <Link href="/dashboard/journal">
-            <Button variant="primary" size="sm" className="gap-2 rounded-xl">
+            <Button
+              variant="primary"
+              size="sm"
+              className="gap-2 rounded-xl"
+            >
               Start Writing
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
           <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
             <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-slate-600">Mood Check-in</span>
+              <span className="text-sm font-medium text-slate-600">
+                Mood Check-in
+              </span>
               <span className="text-brand font-headline w-10 text-lg font-bold">
                 {moodValue}
               </span>
@@ -85,7 +91,11 @@ export function WelcomeCard({
               disabled={submitLoading || moodLoading}
               onClick={onSubmitMood}
             >
-              {submitLoading ? "Saving..." : submittedToday ? "Update" : "Submit"}
+              {submitLoading
+                ? "Saving..."
+                : submittedToday
+                  ? "Update"
+                  : "Submit"}
             </Button>
           </div>
         </div>

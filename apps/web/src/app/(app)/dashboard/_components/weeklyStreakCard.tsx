@@ -21,7 +21,10 @@ export function WeeklyStreakCard({ streak, weekDays }: WeeklyStreakCardProps) {
         {WEEKDAYS.map((day, i) => {
           const filled = weekDays?.[i] ?? false;
           return (
-            <div key={day + i} className="flex flex-col items-center gap-1">
+            <div
+              key={day + i}
+              className="flex flex-col items-center gap-1"
+            >
               <div
                 className={`flex h-5 w-5 items-center justify-center rounded-full text-[9px] font-medium sm:h-6 sm:w-6 sm:text-[10px] ${
                   filled

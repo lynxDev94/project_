@@ -18,7 +18,8 @@ export function InstallAppButton({
   size = "default",
   ...props
 }: InstallAppButtonProps) {
-  const { ready, isStandalone, canNativeInstall, promptInstall } = usePwaInstall();
+  const { ready, isStandalone, canNativeInstall, promptInstall } =
+    usePwaInstall();
   const [dialogOpen, setDialogOpen] = useState(false);
 
   if (!ready || isStandalone) return null;
@@ -44,10 +45,16 @@ export function InstallAppButton({
         onClick={() => void onClick()}
         {...props}
       >
-        <Smartphone className="size-4 shrink-0" aria-hidden />
+        <Smartphone
+          className="size-4 shrink-0"
+          aria-hidden
+        />
         {label}
       </Button>
-      <PwaInstallDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+      <PwaInstallDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+      />
     </>
   );
 }

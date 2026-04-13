@@ -57,30 +57,30 @@ export async function deductUserCreditsServer(
   const maxAttempts = 4;
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     const currentUser = await getUserCreditRow(userId);
-  const sub = (currentUser?.subscription_credits as number) ?? 0;
-  const bonus = (currentUser?.bonus_credits as number) ?? 0;
-  const currentBalance = sub + bonus;
-  if (currentBalance < creditsToDeduct) {
-    return { ok: false };
-  }
+    const sub = (currentUser?.subscription_credits as number) ?? 0;
+    const bonus = (currentUser?.bonus_credits as number) ?? 0;
+    const currentBalance = sub + bonus;
+    if (currentBalance < creditsToDeduct) {
+      return { ok: false };
+    }
 
-  let newSub = sub;
-  let newBonus = bonus;
-  let remaining = creditsToDeduct;
-  if (remaining <= sub) {
-    newSub = sub - remaining;
-  } else {
-    remaining -= sub;
-    newSub = 0;
-    newBonus = bonus - remaining;
-  }
+    let newSub = sub;
+    let newBonus = bonus;
+    let remaining = creditsToDeduct;
+    if (remaining <= sub) {
+      newSub = sub - remaining;
+    } else {
+      remaining -= sub;
+      newSub = 0;
+      newBonus = bonus - remaining;
+    }
 
     const { data, error } = await supabaseServer
-    .from("users")
-    .update({
-      subscription_credits: newSub,
-      bonus_credits: newBonus,
-    })
+      .from("users")
+      .update({
+        subscription_credits: newSub,
+        bonus_credits: newBonus,
+      })
       .eq("id", userId)
       .eq("subscription_credits", sub)
       .eq("bonus_credits", bonus)
@@ -131,7 +131,9 @@ export async function refundUserCreditsServer(
 }
 
 /** Returns false if this id was already processed (idempotent webhook handling). */
-export async function claimStripeSubscriptionCreditEvent(id: string): Promise<boolean> {
+export async function claimStripeSubscriptionCreditEvent(
+  id: string,
+): Promise<boolean> {
   const { error } = await supabaseServer
     .from("stripe_subscription_credit_events")
     .insert({ id });
@@ -142,7 +144,10 @@ export async function claimStripeSubscriptionCreditEvent(id: string): Promise<bo
   return false;
 }
 
-export async function refillSubscriptionCredits(userId: string, planCap: number): Promise<void> {
+export async function refillSubscriptionCredits(
+  userId: string,
+  planCap: number,
+): Promise<void> {
   const { error } = await supabaseServer
     .from("users")
     .update({ subscription_credits: planCap })
@@ -151,7 +156,9 @@ export async function refillSubscriptionCredits(userId: string, planCap: number)
   if (error) throw new Error(`refillSubscriptionCredits: ${error.message}`);
 }
 
-export async function getMonthlyLlmUsageSummary(userId: string): Promise<MonthlyUsageSummary> {
+export async function getMonthlyLlmUsageSummary(
+  userId: string,
+): Promise<MonthlyUsageSummary> {
   const periodStartIso = getMonthStartUtcIso();
   const { data, error } = await supabaseServer
     .from("llm_usage_events")
@@ -173,13 +180,18 @@ export async function getMonthlyLlmUsageSummary(userId: string): Promise<Monthly
   return { totalTokens, totalCostUsd, periodStartIso };
 }
 
-export async function isWithinMonthlyLlmLimits(userId: string): Promise<{
-  ok: true;
-} | {
-  ok: false;
-  reason: string;
-}> {
-  const tokenLimit = Number(process.env.AI_MONTHLY_TOKEN_LIMIT ?? DEFAULT_MONTHLY_TOKEN_LIMIT);
+export async function isWithinMonthlyLlmLimits(userId: string): Promise<
+  | {
+      ok: true;
+    }
+  | {
+      ok: false;
+      reason: string;
+    }
+> {
+  const tokenLimit = Number(
+    process.env.AI_MONTHLY_TOKEN_LIMIT ?? DEFAULT_MONTHLY_TOKEN_LIMIT,
+  );
   const costLimit = Number(
     process.env.AI_MONTHLY_COST_LIMIT_USD ?? DEFAULT_MONTHLY_COST_LIMIT_USD,
   );
@@ -187,13 +199,15 @@ export async function isWithinMonthlyLlmLimits(userId: string): Promise<{
   if (usage.totalTokens >= tokenLimit) {
     return {
       ok: false,
-      reason: "Monthly AI token limit reached. Please contact support or upgrade.",
+      reason:
+        "Monthly AI token limit reached. Please contact support or upgrade.",
     };
   }
   if (usage.totalCostUsd >= costLimit) {
     return {
       ok: false,
-      reason: "Monthly AI spend limit reached. Please contact support or upgrade.",
+      reason:
+        "Monthly AI spend limit reached. Please contact support or upgrade.",
     };
   }
   return { ok: true };

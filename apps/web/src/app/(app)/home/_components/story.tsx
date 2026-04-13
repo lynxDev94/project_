@@ -38,8 +38,8 @@ export const Story = () => {
                 Private by default
               </p>
               <p className="text-sm leading-relaxed text-slate-300">
-                Your entries are for you. No public feed, no likes, no algorithmic
-                pressure.
+                Your entries are for you. No public feed, no likes, no
+                algorithmic pressure.
               </p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">

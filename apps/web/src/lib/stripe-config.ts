@@ -3,7 +3,8 @@
 
 /** Initiate tier in dashboard (€29). Override with NEXT_PUBLIC_STRIPE_PRICE_INITIATE if needed. */
 const INITIATE_PRICE_ID =
-  (process.env.NEXT_PUBLIC_STRIPE_PRICE_INITIATE?.trim() || "") ||
+  process.env.NEXT_PUBLIC_STRIPE_PRICE_INITIATE?.trim() ||
+  "" ||
   "price_1TEVMpLgnA1V8fpJuBfG4HoZ";
 
 export const STRIPE_PRICE_IDS = {
@@ -31,7 +32,8 @@ export const SHADOW_JOURNAL_CREDITS = {
 
 /** Extra-analysis top-up (€2 one-time). Override price via NEXT_PUBLIC_STRIPE_PRICE_EXTRA_ANALYSIS. */
 const EXTRA_ANALYSIS_PRICE_ID =
-  (process.env.NEXT_PUBLIC_STRIPE_PRICE_EXTRA_ANALYSIS?.trim() || "") ||
+  process.env.NEXT_PUBLIC_STRIPE_PRICE_EXTRA_ANALYSIS?.trim() ||
+  "" ||
   "price_1TEzGrLgnA1V8fpJoBa9vZro";
 
 /**
@@ -108,7 +110,8 @@ const SHADOW_JOURNAL_PLAN_NAMES: Record<string, string> = {
 
 // Helper to get plan display name by price ID
 export function getPlanNameByPriceId(priceId: string): string {
-  if (SHADOW_JOURNAL_PLAN_NAMES[priceId]) return SHADOW_JOURNAL_PLAN_NAMES[priceId];
+  if (SHADOW_JOURNAL_PLAN_NAMES[priceId])
+    return SHADOW_JOURNAL_PLAN_NAMES[priceId];
   for (const [, info] of Object.entries(PLAN_INFO)) {
     if (info.priceId === priceId) return info.name;
   }
@@ -117,9 +120,15 @@ export function getPlanNameByPriceId(priceId: string): string {
 
 // Helper function to get credit limit by price ID
 export function getCreditLimitByPriceId(priceId: string): number {
-  if (priceId === STRIPE_PRICE_IDS.REFLECT || priceId === STRIPE_PRICE_IDS.BEGINNER)
+  if (
+    priceId === STRIPE_PRICE_IDS.REFLECT ||
+    priceId === STRIPE_PRICE_IDS.BEGINNER
+  )
     return SHADOW_JOURNAL_CREDITS.REFLECT;
-  if (priceId === STRIPE_PRICE_IDS.INITIATE || priceId === STRIPE_PRICE_IDS.PROFESSIONAL)
+  if (
+    priceId === STRIPE_PRICE_IDS.INITIATE ||
+    priceId === STRIPE_PRICE_IDS.PROFESSIONAL
+  )
     return SHADOW_JOURNAL_CREDITS.INITIATE;
   switch (priceId) {
     case STRIPE_PRICE_IDS.ENTERPRISE:

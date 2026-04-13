@@ -3,7 +3,9 @@ import { EyeOff, Sparkles, Star } from "lucide-react";
 export function InsightsComingSoonCard() {
   return (
     <div>
-      <h2 className="mb-4 font-sans text-sm font-bold text-slate-400">Insights</h2>
+      <h2 className="mb-4 font-sans text-sm font-bold text-slate-400">
+        Insights
+      </h2>
       <div className="divide-dashboard-stroke border-dashboard-stroke shadow-card-layered pointer-events-none divide-y overflow-hidden rounded-2xl border bg-white/70 opacity-60 backdrop-blur-md select-none">
         <div className="flex items-start gap-3 p-4">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-200">
@@ -25,7 +27,9 @@ export function InsightsComingSoonCard() {
             <p className="text-xs font-semibold tracking-wider text-slate-400 uppercase">
               Shadow focus
             </p>
-            <p className="mt-1 font-semibold text-slate-500">Professional Envy</p>
+            <p className="mt-1 font-semibold text-slate-500">
+              Professional Envy
+            </p>
             <p className="text-xs text-slate-400">
               Primary area of integration
             </p>
@@ -40,8 +44,8 @@ export function InsightsComingSoonCard() {
           </div>
           <p className="text-sm text-slate-500 italic">
             Your recent entries suggest a transition from the
-            &lsquo;Anima&rsquo; projection to personal empowerment. Consider writing
-            about your childhood mentors next.
+            &lsquo;Anima&rsquo; projection to personal empowerment. Consider
+            writing about your childhood mentors next.
           </p>
         </div>
         <p className="py-3 text-center text-xs text-slate-400">

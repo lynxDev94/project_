@@ -106,9 +106,9 @@ export const Hero = () => {
           className="mx-auto mb-12 max-w-2xl text-lg leading-relaxed text-slate-400 md:text-xl"
           variants={heroItem}
         >
-          Write what happened. Get reflections informed by Carl Jung’s analytical
-          psychology—shadow, archetypes, recurring themes—so you can spot
-          triggers and your next step.
+          Write what happened. Get reflections informed by Carl Jung’s
+          analytical psychology—shadow, archetypes, recurring themes—so you can
+          spot triggers and your next step.
         </motion.p>
         <motion.div
           className="mb-8 w-full max-w-[200px] md:max-w-[280px]"

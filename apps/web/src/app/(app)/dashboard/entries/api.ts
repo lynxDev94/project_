@@ -20,7 +20,9 @@ export async function deleteEntryById(id: string): Promise<void> {
   }
 }
 
-export async function analyzeEntryById(id: string): Promise<AnalyzeEntryResponse> {
+export async function analyzeEntryById(
+  id: string,
+): Promise<AnalyzeEntryResponse> {
   const response = await fetch(`/api/entries/${id}/analysis`, {
     method: "POST",
   });

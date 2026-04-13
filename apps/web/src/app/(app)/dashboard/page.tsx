@@ -25,7 +25,10 @@ export default function DashboardPage() {
   } = useDashboardData();
 
   const greetingName =
-    user?.firstName || user?.displayName || user?.email?.split("@")[0] || "there";
+    user?.firstName ||
+    user?.displayName ||
+    user?.email?.split("@")[0] ||
+    "there";
 
   return (
     <div className="font-sans text-slate-800">
@@ -50,7 +53,11 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <MoodTrendCard loading={trendLoading} labels={trendLabels} points={trendPoints} />
+      <MoodTrendCard
+        loading={trendLoading}
+        labels={trendLabels}
+        points={trendPoints}
+      />
       <DashboardStatsGrid stats={stats} />
     </div>
   );

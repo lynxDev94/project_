@@ -35,9 +35,23 @@ function getWeekDays(entryDates: string[]): boolean[] {
 
 function getMostActiveDay(entryDates: string[]): string {
   const dayCounts: Record<number, number> = {
-    0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0,
+    0: 0,
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
   };
-  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const dayNames = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
   for (const dateStr of entryDates) {
     const d = new Date(dateStr);
@@ -87,7 +101,10 @@ export async function GET() {
 
     const list = entries ?? [];
     const totalEntries = list.length;
-    const totalWords = list.reduce((sum, e) => sum + wordCount(e.body || ""), 0);
+    const totalWords = list.reduce(
+      (sum, e) => sum + wordCount(e.body || ""),
+      0,
+    );
     const entryDates = list.map((e) => e.entry_date);
     const streak = getStreak(entryDates);
     const mostActiveDay = totalEntries > 0 ? getMostActiveDay(entryDates) : "—";

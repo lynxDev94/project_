@@ -33,15 +33,24 @@ export function MoodTrendChart({ points, labels }: MoodTrendChartProps) {
   }
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
-      <BarChart data={data} margin={{ top: 8, right: 8, left: 8, bottom: 16 }}>
+    <ResponsiveContainer
+      width="100%"
+      height="100%"
+    >
+      <BarChart
+        data={data}
+        margin={{ top: 8, right: 8, left: 8, bottom: 16 }}
+      >
         <CartesianGrid
           strokeDasharray="3 3"
           vertical={false}
           stroke="#e2e8f0"
           opacity={0.4}
         />
-        <YAxis domain={[0, 100]} hide />
+        <YAxis
+          domain={[0, 100]}
+          hide
+        />
         <XAxis
           dataKey="label"
           tickLine={false}
@@ -56,9 +65,16 @@ export function MoodTrendChart({ points, labels }: MoodTrendChartProps) {
             border: "1px solid rgba(148, 163, 184, 0.4)",
             boxShadow: "0 10px 30px rgba(15, 23, 42, 0.15)",
           }}
-          formatter={(value) => [value == null ? "–" : String(value), "Mood score"]}
+          formatter={(value) => [
+            value == null ? "–" : String(value),
+            "Mood score",
+          ]}
         />
-        <Bar dataKey="mood" fill="rgb(108, 43, 238)" radius={[4, 4, 0, 0]} />
+        <Bar
+          dataKey="mood"
+          fill="rgb(108, 43, 238)"
+          radius={[4, 4, 0, 0]}
+        />
       </BarChart>
     </ResponsiveContainer>
   );

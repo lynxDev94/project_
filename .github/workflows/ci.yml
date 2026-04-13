@@ -71,7 +71,7 @@ jobs:
       - uses: codespell-project/actions-codespell@v2
         with:
           ignore_words_file: .codespellignore
-          path: src
+          path: apps/web/src
 
   dev-server-check:
     name: Check dev server startup
@@ -104,11 +104,8 @@ jobs:
           STRIPE_SECRET_KEY: "sk_test_dummy_stripe_secret_key"
           NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_test_dummy_stripe_publishable_key"
           STRIPE_WEBHOOK_SECRET: "whsec_dummy_webhook_secret"
-          # LangGraph
-          LANGGRAPH_API_URL: "https://dummy.langgraph.app"
-          LANGSMITH_API_KEY: "lsv2_dummy_langsmith_api_key"
-          NEXT_PUBLIC_API_URL: "https://dummy.api.url"
-          NEXT_PUBLIC_ASSISTANT_ID: "dummy-assistant"
+          # AI
+          OPENAI_API_KEY: "sk-dummy-openai"
       - name: Test dev server startup
         run: timeout 30s pnpm dev || if [ $? -eq 124 ]; then echo "✅ Dev server started successfully (timed out as expected)"; exit 0; else echo "❌ Dev server failed to start"; exit 1; fi
         env:
@@ -121,11 +118,8 @@ jobs:
           STRIPE_SECRET_KEY: "sk_test_dummy_stripe_secret_key"
           NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_test_dummy_stripe_publishable_key"
           STRIPE_WEBHOOK_SECRET: "whsec_dummy_webhook_secret"
-          # LangGraph
-          LANGGRAPH_API_URL: "https://dummy.langgraph.app"
-          LANGSMITH_API_KEY: "lsv2_dummy_langsmith_api_key"
-          NEXT_PUBLIC_API_URL: "https://dummy.api.url"
-          NEXT_PUBLIC_ASSISTANT_ID: "dummy-assistant"
+          # AI
+          OPENAI_API_KEY: "sk-dummy-openai"
 
   build-check:
     name: Check project build
@@ -152,8 +146,22 @@ jobs:
           STRIPE_SECRET_KEY: "sk_test_dummy_stripe_secret_key"
           NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_test_dummy_stripe_publishable_key"
           STRIPE_WEBHOOK_SECRET: "whsec_dummy_webhook_secret"
-          # LangGraph
-          LANGGRAPH_API_URL: "https://dummy.langgraph.app"
-          LANGSMITH_API_KEY: "lsv2_dummy_langsmith_api_key"
-          NEXT_PUBLIC_API_URL: "https://dummy.api.url"
-          NEXT_PUBLIC_ASSISTANT_ID: "dummy-assistant"
+          # AI
+          OPENAI_API_KEY: "sk-dummy-openai"
+
+  test-check:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run tests
+        run: pnpm test

@@ -107,19 +107,25 @@ export default function SettingsPage() {
       {/* Actions */}
       <div className="flex justify-end gap-3">
         <Link href="/dashboard">
-          <Button variant="outline" size="lg">
+          <Button
+            variant="outline"
+            size="lg"
+          >
             Cancel
           </Button>
         </Link>
       </div>
 
-      <Dialog open={journalDialogOpen} onOpenChange={setJournalDialogOpen}>
+      <Dialog
+        open={journalDialogOpen}
+        onOpenChange={setJournalDialogOpen}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete journal data</DialogTitle>
             <DialogDescription>
-              This will permanently delete all your journal entries and mood entries.
-              Your account will remain active. This cannot be undone.
+              This will permanently delete all your journal entries and mood
+              entries. Your account will remain active. This cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -143,7 +149,10 @@ export default function SettingsPage() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={accountDialogOpen} onOpenChange={setAccountDialogOpen}>
+      <Dialog
+        open={accountDialogOpen}
+        onOpenChange={setAccountDialogOpen}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Remove account</DialogTitle>
@@ -165,7 +174,9 @@ export default function SettingsPage() {
               onClick={() => deleteAccountMutation.mutate()}
               disabled={deleteAccountMutation.isPending}
             >
-              {deleteAccountMutation.isPending ? "Deleting..." : "Remove account"}
+              {deleteAccountMutation.isPending
+                ? "Deleting..."
+                : "Remove account"}
             </Button>
           </DialogFooter>
         </DialogContent>

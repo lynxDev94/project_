@@ -235,7 +235,9 @@ export default function SigninPage() {
                 />
               </div>
               {errors.password && (
-                <p className="text-sm text-red-400">{errors.password.message}</p>
+                <p className="text-sm text-red-400">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 

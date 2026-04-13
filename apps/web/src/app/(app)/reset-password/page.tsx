@@ -15,9 +15,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const resetPasswordSchema = z
   .object({
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters long."),
+    password: z.string().min(8, "Password must be at least 8 characters long."),
     confirmPassword: z.string().min(1, "Please confirm your password."),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -63,7 +61,9 @@ export default function ResetPasswordPage() {
     // For stricter security: clear any session established via the reset link
     await signOut();
 
-    setSuccess("Your password has been updated. Please sign in with your new password.");
+    setSuccess(
+      "Your password has been updated. Please sign in with your new password.",
+    );
 
     // After a short delay, redirect to sign-in (without auto-login)
     setTimeout(() => {
@@ -139,7 +139,9 @@ export default function ResetPasswordPage() {
                 className="bg-background-dark/80 focus-visible:ring-brand rounded-xl border-white/10 pl-4 text-slate-100 placeholder:text-slate-500 focus-visible:ring-2"
               />
               {errors.password && (
-                <p className="text-sm text-red-400">{errors.password.message}</p>
+                <p className="text-sm text-red-400">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 
@@ -205,4 +207,3 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
-

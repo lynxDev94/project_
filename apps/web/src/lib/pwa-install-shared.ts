@@ -13,8 +13,9 @@ export function isIosSafari(): boolean {
 
 export function isStandaloneDisplay(): boolean {
   if (typeof window === "undefined") return false;
-  const iosStandalone = (window.navigator as Navigator & { standalone?: boolean })
-    .standalone;
+  const iosStandalone = (
+    window.navigator as Navigator & { standalone?: boolean }
+  ).standalone;
   return (
     window.matchMedia("(display-mode: standalone)").matches ||
     iosStandalone === true

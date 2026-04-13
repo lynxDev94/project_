@@ -37,7 +37,10 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="p-0">
+                <SheetContent
+                  side="left"
+                  className="p-0"
+                >
                   <SheetHeader className="sr-only">
                     <SheetTitle>Navigation</SheetTitle>
                   </SheetHeader>
@@ -51,7 +54,9 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
                   <span className="text-slate-800">Journal</span>
                 </span>
                 <span className="mx-1.5 text-slate-400">/</span>
-                <span className="text-slate-800">{getSidebarPageTitle(pathname)}</span>
+                <span className="text-slate-800">
+                  {getSidebarPageTitle(pathname)}
+                </span>
               </nav>
             </div>
             <CreditBalance />

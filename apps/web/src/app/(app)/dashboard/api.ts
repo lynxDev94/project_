@@ -54,6 +54,8 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
     totalWords: data.totalWords ?? 0,
     streak: data.streak ?? 0,
     mostActiveDay: data.mostActiveDay ?? "—",
-    weekDays: Array.isArray(data.weekDays) ? data.weekDays : Array(7).fill(false),
+    weekDays: Array.isArray(data.weekDays)
+      ? data.weekDays
+      : Array(7).fill(false),
   };
 }

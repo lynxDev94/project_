@@ -44,7 +44,10 @@ export function SidebarNav({ pathname }: { pathname: string }) {
 
   return (
     <div className="flex h-full flex-col bg-[#F8F9FE]">
-      <Link href="/dashboard" className="mb-8 flex items-center gap-2 px-6 pt-6">
+      <Link
+        href="/dashboard"
+        className="mb-8 flex items-center gap-2 px-6 pt-6"
+      >
         <Image
           src="/images/brandLogo.png"
           alt="Shadow Journal"

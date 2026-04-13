@@ -8,7 +8,10 @@ const INTEGRATOR_MONTHLY_EUR = 59;
 
 export const Pricing = () => {
   return (
-    <section id="pricing" className="py-24">
+    <section
+      id="pricing"
+      className="py-24"
+    >
       <div className="mx-auto max-w-6xl px-6 text-center">
         <div className="border-brand/30 bg-brand/10 text-brand mb-6 inline-block rounded-full border px-4 py-1 text-xs font-semibold tracking-wider uppercase">
           Monthly Plans
@@ -17,15 +20,23 @@ export const Pricing = () => {
           Ready to meet yourself?
         </h2>
         <p className="mx-auto mb-10 max-w-2xl text-sm text-slate-400">
-          Start free, then upgrade when you want deeper reflection. 1 credit = 1 AI analysis.
+          Start free, then upgrade when you want deeper reflection. 1 credit = 1
+          AI analysis.
         </p>
 
         <div className="grid gap-5 text-left sm:grid-cols-2 lg:grid-cols-4">
           <div className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-5 transition-colors hover:border-white/20 md:p-6">
-            <h3 className="mb-2 font-sans text-lg font-bold text-slate-100">Start free</h3>
-            <p className="mb-4 text-sm text-slate-400">Free journaling. No AI analysis.</p>
+            <h3 className="mb-2 font-sans text-lg font-bold text-slate-100">
+              Start free
+            </h3>
+            <p className="mb-4 text-sm text-slate-400">
+              Free journaling. No AI analysis.
+            </p>
             <div className="mb-5 text-2xl font-bold">
-              {"\u20AC"}0 <span className="text-sm font-normal text-slate-500">/ forever</span>
+              {"\u20AC"}0{" "}
+              <span className="text-sm font-normal text-slate-500">
+                / forever
+              </span>
             </div>
             <ul className="mb-6 space-y-2.5 text-sm text-slate-300">
               <li className="flex items-center gap-2">
@@ -39,7 +50,11 @@ export const Pricing = () => {
             </ul>
             <div className="mt-auto">
               <Link href="/signup">
-                <Button variant="muted" size="lg" className="w-full rounded-xl">
+                <Button
+                  variant="muted"
+                  size="lg"
+                  className="w-full rounded-xl"
+                >
                   Start Free
                 </Button>
               </Link>
@@ -47,11 +62,20 @@ export const Pricing = () => {
           </div>
 
           <div className="hover:border-brand/30 flex flex-col rounded-2xl border border-white/10 bg-white/5 p-5 transition-colors md:p-6">
-            <h3 className="mb-2 font-sans text-lg font-bold text-slate-100">Get Reflect</h3>
-            <p className="mb-4 text-sm text-slate-400">Journaling plus 10 AI reflections per month.</p>
+            <h3 className="mb-2 font-sans text-lg font-bold text-slate-100">
+              Get Reflect
+            </h3>
+            <p className="mb-4 text-sm text-slate-400">
+              Journaling plus 10 AI reflections per month.
+            </p>
             <div className="mb-5">
-              <span className="text-2xl font-bold">{"\u20AC"}{REFLECT_MONTHLY_EUR}</span>
-              <span className="text-sm font-normal text-slate-500">/ month</span>
+              <span className="text-2xl font-bold">
+                {"\u20AC"}
+                {REFLECT_MONTHLY_EUR}
+              </span>
+              <span className="text-sm font-normal text-slate-500">
+                / month
+              </span>
             </div>
             <ul className="mb-6 space-y-2.5 text-sm text-slate-300">
               <li className="flex items-center gap-2">
@@ -68,7 +92,7 @@ export const Pricing = () => {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="w-full rounded-xl border-brand/40 bg-transparent text-brand hover:border-brand/60 hover:bg-brand/10 hover:text-brand"
+                  className="border-brand/40 text-brand hover:border-brand/60 hover:bg-brand/10 hover:text-brand w-full rounded-xl bg-transparent"
                 >
                   Choose Reflect
                 </Button>
@@ -80,11 +104,20 @@ export const Pricing = () => {
             <div className="bg-brand absolute top-3 right-3 rounded px-2 py-1 text-[10px] font-bold tracking-tighter uppercase">
               Recommended
             </div>
-            <h3 className="mb-2 font-sans text-lg font-bold text-slate-100">Get Initiate</h3>
-            <p className="mb-4 text-sm text-slate-400">30 AI analyses per month, export & priority support.</p>
+            <h3 className="mb-2 font-sans text-lg font-bold text-slate-100">
+              Get Initiate
+            </h3>
+            <p className="mb-4 text-sm text-slate-400">
+              30 AI analyses per month, export & priority support.
+            </p>
             <div className="mb-5">
-              <span className="text-2xl font-bold">{"\u20AC"}{INITIATE_MONTHLY_EUR}</span>
-              <span className="text-sm font-normal text-slate-500">/ month</span>
+              <span className="text-2xl font-bold">
+                {"\u20AC"}
+                {INITIATE_MONTHLY_EUR}
+              </span>
+              <span className="text-sm font-normal text-slate-500">
+                / month
+              </span>
             </div>
             <ul className="mb-6 space-y-2.5 text-sm text-slate-300">
               <li className="flex items-center gap-2">
@@ -105,7 +138,7 @@ export const Pricing = () => {
                 <Button
                   variant="primary"
                   size="lg"
-                  className="w-full rounded-xl bg-brand text-white hover:bg-brand/90"
+                  className="bg-brand hover:bg-brand/90 w-full rounded-xl text-white"
                 >
                   Choose Initiate
                 </Button>
@@ -117,11 +150,20 @@ export const Pricing = () => {
             <div className="absolute top-3 right-3 rounded border border-amber-500/40 bg-amber-500/10 px-2 py-1 text-[10px] font-bold tracking-tighter text-amber-300 uppercase">
               Coming soon
             </div>
-            <h3 className="mb-2 font-sans text-lg font-bold text-slate-100">The Integrator</h3>
-            <p className="mb-4 text-sm text-slate-400">Unlimited analyses. Deep work, no limits.</p>
+            <h3 className="mb-2 font-sans text-lg font-bold text-slate-100">
+              The Integrator
+            </h3>
+            <p className="mb-4 text-sm text-slate-400">
+              Unlimited analyses. Deep work, no limits.
+            </p>
             <div className="mb-5">
-              <span className="text-2xl font-bold">{"\u20AC"}{INTEGRATOR_MONTHLY_EUR}</span>
-              <span className="text-sm font-normal text-slate-500">/ month</span>
+              <span className="text-2xl font-bold">
+                {"\u20AC"}
+                {INTEGRATOR_MONTHLY_EUR}
+              </span>
+              <span className="text-sm font-normal text-slate-500">
+                / month
+              </span>
             </div>
             <ul className="mb-6 space-y-2.5 text-sm text-slate-300">
               <li className="flex items-center gap-2">

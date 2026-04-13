@@ -1,188 +1,74 @@
-# Agent with Auth and Payments Repo
+# Shadow Journal
 
-A monorepo containing a Agent with Auth and Payments application with LangGraph agents and Next.js UI.
+Portfolio-grade journaling app built with Next.js, Supabase, Stripe, LangGraph agents, and server-side AI analysis.
 
-## 🏗️ Architecture
+## What this app includes
+- Auth (email + optional Google OAuth) via Supabase
+- Mood trend check-in and dashboard stats
+- Journal entries CRUD + search
+- Stripe subscription + one-time extra analysis purchase
+- Server-side AI analysis endpoint (via `apps/agents`) with credit deduction, refund-on-failure, rate limits, and usage ledger tracking
+- SEO + PWA baseline (manifest, robots, sitemap, service worker)
 
-This monorepo contains two main applications:
+## Project structure
+- `apps/web` - Main Next.js app (App Router)
+- `docs` - Setup, architecture, deployment notes
+- `supabase-llm-usage-migration.sql` - Migration for token/cost usage ledger
 
-- **`apps/web`** - Next.js chat UI application with LangGraph integration
-- **`apps/agents`** - LangGraph.js ReAct agents backend
-
-## 🚀 Quick Start
-### Terminal Tab 1:
+## Quick start
 ```bash
-# Clone the repo
-git clone https://github.com/langchain-ai/agentic-saas-template.git```
-
-#  **Environment Files**: Copy the `.env.example` files to `.env` and fill in credentials
-cp apps/web/.env.example apps/web/.env
-cp apps/agents/.env.example apps/agents/.env
-
-# Install dependencies for all apps
 pnpm install
-
-# Start development servers for both apps
-pnpm dev
+cp apps/web/.env.example apps/web/.env.local
+pnpm web:dev
 ```
-### 🗄️ Database Setup
 
-1. **Full schema**: Run `supabase-schema.sql` in the Supabase SQL Editor (includes users, mood_entries, entries)
-2. **Or add incrementally**: Run `supabase-mood-migration.sql` for mood only, or `supabase-entries-migration.sql` for journal entries only
+## Required environment variables
+Set in `apps/web/.env.local`:
+- `NEXT_PUBLIC_BASE_URL`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `STRIPE_SECRET_KEY`
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `OPENAI_API_KEY`
+- `LANGGRAPH_API_URL` (for analysis orchestration)
 
-### What gets set up:
-- ✅ Users table with Stripe integration
-- ✅ Mood entries (for Mood Trend)
-- ✅ Journal entries (for reflections)
-- ✅ Row Level Security (RLS) policies  
-- ✅ Automatic user profile creation
-- ✅ Performance indexes and triggers
+Optional limits:
+- `OPENAI_MODEL` (default `gpt-4o-mini`)
+- `AI_MONTHLY_TOKEN_LIMIT` (default `250000`)
+- `AI_MONTHLY_COST_LIMIT_USD` (default `20`)
 
-### Optional improvements
-See [`docs/OPTIONAL_IMPROVEMENTS.md`](docs/OPTIONAL_IMPROVEMENTS.md) for ideas: Zustand caching, edit/delete entries, AI analysis, full-text search, and more.
+## Database setup
+Run your base schema first (users, entries, mood entries, stripe event tables), then run:
 
-### Terminal Tab 2: Stripe Webhook (for purchases + credits)
+```sql
+-- Supabase SQL editor
+-- file: supabase-llm-usage-migration.sql
+```
 
+This creates `llm_usage_events` to track per-user token and cost usage.
+
+## Stripe local webhook
 ```bash
-stripe listen --events customer.subscription.created,customer.subscription.updated,customer.subscription.deleted --forward-to localhost:3000/api/webhooks/stripe
-
-## add stripe webhook key to apps/web/.env
-STRIPE_WEBHOOK_SECRET=""
-```
-You're ready to use the app!
-
-### Use the App
-
-```markdown
-1. Open localhost:3000
-2. Sign up -> confirm email
-3. login
-4. pricing page --> purchase credits
-   a. should see stripe events in Terminal Tab 3
-5. should see success page, new credits added
-6. back to home, chat with app, credits get deducted
+stripe listen \
+  --events checkout.session.completed,invoice.paid,customer.subscription.created,customer.subscription.updated,customer.subscription.deleted \
+  --forward-to localhost:3000/api/webhooks/stripe
 ```
 
-
-## 📦 Package Management
-
-This monorepo uses **pnpm workspaces** for efficient dependency management and task orchestration.
-
-### Available Scripts
-
-#### Root Level Commands
-
+## Quality gates
 ```bash
-# Development
-pnpm dev              # Start all apps in development mode (parallel)
-pnpm build            # Build all apps
-pnpm lint             # Lint all apps
-pnpm lint:fix         # Fix linting issues in all apps
-pnpm format           # Format code in all apps
-pnpm format:check     # Check code formatting in all apps
-pnpm test             # Run tests in all apps
-pnpm test:int         # Run integration tests in all apps
-pnpm clean            # Clean all build artifacts and node_modules
-
-# Individual App Commands
-pnpm web:dev          # Start only the web app
-pnpm web:build        # Build only the web app
-pnpm agents:dev       # Start only the agents app
-pnpm agents:build     # Build only the agents app
-pnpm agents:test      # Test only the agents app
-pnpm agents:test:int  # Integration tests for agents app
-```
-
-
-
-## 🏗️ Project Structure
-
-```
-├── apps/
-│   ├── web/                 # Next.js chat UI
-│   │   ├── src/
-│   │   ├── package.json
-│   │   └── ...
-│   └── agents/              # LangGraph agents
-│       ├── src/
-│       ├── package.json
-│       └── ...
-├── package.json             # Root package.json with workspaces
-├── pnpm-workspace.yaml     # pnpm workspace configuration
-├── .npmrc                  # pnpm configuration
-└── README.md
-```
-
-## 🛠️ Technology Stack
-
-### Web App (`apps/web`)
-- **Framework**: Next.js 15
-- **UI**: Radix UI + Tailwind CSS + shadcn/ui
-- **Auth**: Supabase, 
-- **Payments**: Stripe SDK
-- **State**: Nuqs, Zustand
-- **Package Manager**: pnpm
-
-### Agents App (`apps/agents`)
-- **Runtime**: Node.js + TypeScript
-- **Framework**: LangGraph.js
-- **AI**: LangChain + Anthropic
-- **Auth**: Langgraph Middleware
-- **Testing**: Jest
-- **Package Manager**: pnpm
-
-## 🔧 Development Workflow
-
-### Adding Dependencies
-
-```bash
-# Add to specific app
-pnpm --filter web add <package>
-pnpm --filter agents add <package>
-
-# Add dev dependency to specific app
-pnpm --filter web add -D <package>
-
-# Add to root (for tooling)
-pnpm add -D <package> -w
-```
-
-### Running Tests
-
-```bash
-# All tests
+pnpm lint
 pnpm test
-
-# Only agents tests
-pnpm agents:test
-
-# Integration tests
-pnpm test:int
-```
-
-### Building for Production
-
-```bash
-# Build all apps
 pnpm build
-
-# Build specific app
-pnpm web:build
-pnpm agents:build
 ```
 
-## 🚀 Deployment
+CI runs format, lint, spelling, test, dev startup check, and build.
 
-Each app can be deployed independently:
-
-- **Web App**: Deploy to Vercel, Netlify, or any Node.js hosting
-- **Agents**: Deploy to any Node.js hosting or containerize with Docker
-
-## 🤝 Contributing
-
-1. Install dependencies: `pnpm install`
-2. Start development: `pnpm dev`
-3. Make your changes
-4. Run tests: `pnpm test`
-5. Format code: `pnpm format`
-6. Submit a pull request
+## Deployment
+See [docs/DEPLOYMENT_RUNBOOK.md](docs/DEPLOYMENT_RUNBOOK.md) for:
+- env matrix
+- migration order
+- Stripe webhook setup
+- smoke-test checklist
+- rollback steps

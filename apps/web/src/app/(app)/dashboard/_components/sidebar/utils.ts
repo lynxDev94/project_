@@ -1,6 +1,9 @@
 import { SIDEBAR_NAV_ITEMS, type SidebarNavItem } from "./config";
 
-export function isSidebarItemActive(item: SidebarNavItem, pathname: string): boolean {
+export function isSidebarItemActive(
+  item: SidebarNavItem,
+  pathname: string,
+): boolean {
   if (item.href === "/dashboard") {
     return pathname === "/dashboard";
   }

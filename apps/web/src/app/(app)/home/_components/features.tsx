@@ -28,7 +28,8 @@ export const Features = () => {
           </h2>
           <p className="mx-auto max-w-2xl text-center text-lg text-slate-400">
             Write for 5–10 minutes. One focused reflection, using language and
-            frames drawn from Carl Jung’s work on the unconscious and archetypes.
+            frames drawn from Carl Jung’s work on the unconscious and
+            archetypes.
           </p>
         </div>
         <div className="grid gap-8 md:grid-cols-3">

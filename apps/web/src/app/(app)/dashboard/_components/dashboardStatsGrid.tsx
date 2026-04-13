@@ -14,7 +14,9 @@ export function DashboardStatsGrid({ stats }: DashboardStatsGridProps) {
             <FileText className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-500">Entries Written</p>
+            <p className="text-sm font-medium text-slate-500">
+              Entries Written
+            </p>
             <p className="font-headline text-2xl font-bold text-slate-900">
               {stats?.totalEntries ?? "—"}
             </p>
@@ -29,7 +31,9 @@ export function DashboardStatsGrid({ stats }: DashboardStatsGridProps) {
           <div>
             <p className="text-sm font-medium text-slate-500">Total Words</p>
             <p className="font-headline text-2xl font-bold text-slate-900">
-              {stats?.totalWords != null ? stats.totalWords.toLocaleString() : "—"}
+              {stats?.totalWords != null
+                ? stats.totalWords.toLocaleString()
+                : "—"}
             </p>
           </div>
         </div>
@@ -40,7 +44,9 @@ export function DashboardStatsGrid({ stats }: DashboardStatsGridProps) {
             <Calendar className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-500">Most Active Day</p>
+            <p className="text-sm font-medium text-slate-500">
+              Most Active Day
+            </p>
             <p className="font-headline text-lg font-bold text-slate-900">
               {stats?.mostActiveDay ?? "—"}
             </p>

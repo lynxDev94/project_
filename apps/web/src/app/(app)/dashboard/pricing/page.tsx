@@ -6,7 +6,11 @@ export default function DashboardPricingPage() {
   return (
     <>
       <Toaster />
-      <Suspense fallback={<div className="text-slate-500 text-sm">Loading pricing…</div>}>
+      <Suspense
+        fallback={
+          <div className="text-sm text-slate-500">Loading pricing…</div>
+        }
+      >
         <PricingPageClient />
       </Suspense>
     </>

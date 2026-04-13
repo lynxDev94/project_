@@ -40,7 +40,10 @@ export default function EntriesPage() {
 
   return (
     <div className="mx-auto max-w-4xl font-sans text-slate-800">
-      <EntriesHeader search={search} onSearchChange={setSearch} />
+      <EntriesHeader
+        search={search}
+        onSearchChange={setSearch}
+      />
 
       {loading ? (
         <div className="flex h-48 items-center justify-center">
@@ -60,7 +63,10 @@ export default function EntriesPage() {
       ) : (
         <div className="space-y-4">
           {entries.map((entry) => (
-            <EntryCard key={entry.id} entry={entry} />
+            <EntryCard
+              key={entry.id}
+              entry={entry}
+            />
           ))}
         </div>
       )}

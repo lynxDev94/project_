@@ -200,7 +200,9 @@ export default function SignupPage() {
                   {...register("firstName")}
                 />
                 {errors.firstName && (
-                  <p className="text-destructive text-sm">{errors.firstName.message}</p>
+                  <p className="text-destructive text-sm">
+                    {errors.firstName.message}
+                  </p>
                 )}
               </div>
               <div className="space-y-2">
@@ -220,7 +222,9 @@ export default function SignupPage() {
                   {...register("lastName")}
                 />
                 {errors.lastName && (
-                  <p className="text-destructive text-sm">{errors.lastName.message}</p>
+                  <p className="text-destructive text-sm">
+                    {errors.lastName.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -243,7 +247,9 @@ export default function SignupPage() {
                   {...register("email")}
                 />
                 {errors.email && (
-                  <p className="text-destructive text-sm">{errors.email.message}</p>
+                  <p className="text-destructive text-sm">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -265,7 +271,9 @@ export default function SignupPage() {
                   {...register("password")}
                 />
                 {errors.password && (
-                  <p className="text-destructive text-sm">{errors.password.message}</p>
+                  <p className="text-destructive text-sm">
+                    {errors.password.message}
+                  </p>
                 )}
               </div>
             </div>

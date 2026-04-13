@@ -28,13 +28,16 @@ type PwaInstallContextValue = {
 
 const PwaInstallContext = createContext<PwaInstallContextValue | null>(null);
 
-export function PwaInstallProvider({ children }: { children: React.ReactNode }) {
+export function PwaInstallProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [ready, setReady] = useState(false);
   const [standalone, setStandalone] = useState(false);
   const [ios, setIos] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(
-    null,
-  );
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
     setStandalone(isStandaloneDisplay());
@@ -49,7 +52,8 @@ export function PwaInstallProvider({ children }: { children: React.ReactNode }) 
     };
 
     window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
-    return () => window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
+    return () =>
+      window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
   }, []);
 
   const promptInstall = useCallback(async (): Promise<PromptInstallResult> => {
@@ -72,7 +76,11 @@ export function PwaInstallProvider({ children }: { children: React.ReactNode }) 
     [ready, standalone, ios, deferredPrompt, promptInstall],
   );
 
-  return <PwaInstallContext.Provider value={value}>{children}</PwaInstallContext.Provider>;
+  return (
+    <PwaInstallContext.Provider value={value}>
+      {children}
+    </PwaInstallContext.Provider>
+  );
 }
 
 export function usePwaInstall(): PwaInstallContextValue {

@@ -28,7 +28,10 @@ async function cancelSubscriptionIfNeeded(
     const sub = await stripe.subscriptions.retrieve(subscriptionId);
     if (!STRIPE_STATUSES_TO_CANCEL.includes(sub.status)) return;
     await stripe.subscriptions.cancel(subscriptionId);
-    console.log("Canceled Stripe subscription for deleted account:", subscriptionId);
+    console.log(
+      "Canceled Stripe subscription for deleted account:",
+      subscriptionId,
+    );
   } catch (e) {
     console.error("Failed to cancel Stripe subscription:", subscriptionId, e);
   }
@@ -82,7 +85,11 @@ export async function cancelStripeSubscriptionsForAppUser(
         await cancelSubscriptionIfNeeded(stripe, sub.id);
       }
     } catch (e) {
-      console.error("Stripe list subscriptions for customer failed:", customerId, e);
+      console.error(
+        "Stripe list subscriptions for customer failed:",
+        customerId,
+        e,
+      );
     }
   }
 }

@@ -1,6 +1,8 @@
 import type { AnalyzeJournalResponse, JournalEntry } from "./types";
 
-export async function fetchJournalEntryById(id: string): Promise<JournalEntry | null> {
+export async function fetchJournalEntryById(
+  id: string,
+): Promise<JournalEntry | null> {
   const response = await fetch(`/api/entries/${id}`);
   if (!response.ok) {
     return null;

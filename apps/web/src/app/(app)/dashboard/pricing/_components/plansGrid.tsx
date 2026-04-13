@@ -39,7 +39,11 @@ export function PlansGrid({
   const freePlan = planConfigFromCatalog(FREE_PLAN, {
     cta: (
       <Link href="/dashboard/journal">
-        <Button variant="outline" size="lg" className="w-full rounded-xl">
+        <Button
+          variant="outline"
+          size="lg"
+          className="w-full rounded-xl"
+        >
           Continue journaling
         </Button>
       </Link>
@@ -54,7 +58,10 @@ export function PlansGrid({
         size="lg"
         className="border-brand/40 text-brand hover:bg-brand/10 hover:border-brand/60 w-full rounded-xl"
         disabled={
-          !reflectId || loading === "reflect" || onReflect || onHigherThanReflect
+          !reflectId ||
+          loading === "reflect" ||
+          onReflect ||
+          onHigherThanReflect
         }
         onClick={() => onSubscribe(reflectId, "reflect")}
       >
@@ -99,7 +106,10 @@ export function PlansGrid({
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {plans.map((plan) => (
-        <PlanCard key={plan.id} plan={plan} />
+        <PlanCard
+          key={plan.id}
+          plan={plan}
+        />
       ))}
     </div>
   );

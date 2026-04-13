@@ -1,12 +1,12 @@
 # 🚀 Quick Setup Summary
 
-This document provides a high-level overview of setting up Supabase for this repository. For detailed instructions, see `SUPABASE_SETUP.md`.
+This is the short setup checklist. For full detail, use `SUPABASE_SETUP.md` and `DEPLOYMENT_RUNBOOK.md`.
 
 ## 📋 What You'll Set Up
 
-1. **Supabase Database** - Users table with auth integration
+1. **Supabase Database** - users, entries, mood, usage ledger
 2. **Row Level Security** - Secure data access policies
-3. **Environment Variables** - Configuration for both web and agents apps
+3. **Environment Variables** - Configuration for web app
 4. **Stripe Integration** - Payment processing and webhook handling
 
 ## ⚡ Quick Start (5 minutes)
@@ -14,19 +14,14 @@ This document provides a high-level overview of setting up Supabase for this rep
 ### 1. Database Setup
 ```bash
 # 1. Create a new Supabase project
-# 2. Copy the contents of supabase-schema.sql
-# 3. Paste and run in your Supabase SQL Editor
+# 2. Run your base schema (users, entries, mood, stripe event table)
+# 3. Run supabase-llm-usage-migration.sql
 ```
 
 ### 2. Environment Setup
 ```bash
-# Run the setup script
-chmod +x setup-supabase.sh
-./setup-supabase.sh
-
-# Then edit the created files with your credentials:
-# - apps/web/.env.local
-# - apps/agents/.env
+cp apps/web/.env.example apps/web/.env.local
+# Then set all required values in .env.local
 ```
 
 ### 3. Get Your Credentials
@@ -41,12 +36,12 @@ chmod +x setup-supabase.sh
 - Publishable key
 - Webhook secret
 
-**LangSmith** (Settings):
+**OpenAI**:
 - API key
 
 ## 🗃️ Database Schema
 
-The setup creates a `users` table that connects to Supabase Auth with these key fields:
+The setup expects a `users` table with:
 
 ```sql
 users (
@@ -54,7 +49,8 @@ users (
   email TEXT
   stripe_customer_id TEXT
   subscription_status TEXT
-  credits_available INTEGER
+  subscription_credits INTEGER
+  bonus_credits INTEGER
   -- ... more fields
 )
 ```
@@ -67,13 +63,10 @@ users (
 
 ## 🎯 Why Separate .env Files?
 
-This repo uses separate environment files for each app:
-- `apps/web/.env.local` - Next.js app with client & server variables
-- `apps/agents/.env` - LangGraph agents with server-only variables
+This repo currently deploys from `apps/web/.env.local`.
 
 **Benefits:**
 - ✅ Better security (apps only get variables they need)
-- ✅ Independent deployment
 - ✅ Clear separation of concerns
 - ✅ Follows principle of least privilege
 
@@ -86,8 +79,8 @@ This repo uses separate environment files for each app:
 ## 📚 Full Documentation
 
 - `SUPABASE_SETUP.md` - Complete step-by-step guide
-- `supabase-schema.sql` - Ready-to-run database setup
-- `setup-supabase.sh` - Automated environment file creation
+- `supabase-llm-usage-migration.sql` - Usage ledger migration
+- `DEPLOYMENT_RUNBOOK.md` - Production deploy and rollback checklist
 
 ## 🆘 Need Help?
 

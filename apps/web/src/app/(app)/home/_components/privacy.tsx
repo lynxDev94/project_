@@ -17,7 +17,8 @@ export const Privacy = () => {
             </h2>
             <p className="mb-8 text-lg text-slate-400">
               Your entries are for you. Shadow Journal is built for reflection,
-              not performance - no public posting, no likes, no algorithmic pressure.
+              not performance - no public posting, no likes, no algorithmic
+              pressure.
             </p>
             <ul className="space-y-4">
               <li className="flex gap-3">

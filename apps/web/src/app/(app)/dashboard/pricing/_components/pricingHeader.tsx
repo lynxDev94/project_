@@ -23,8 +23,8 @@ export function PricingHeader({
         Ready to meet yourself?
       </h1>
       <p className="mt-2 max-w-2xl text-sm text-slate-500">
-        Monthly subscriptions for ongoing practice, or buy a single extra analysis
-        anytime. Prices shown are billed monthly.
+        Monthly subscriptions for ongoing practice, or buy a single extra
+        analysis anytime. Prices shown are billed monthly.
       </p>
 
       {paidActive && currentPlanName && (
@@ -40,7 +40,7 @@ export function PricingHeader({
               type="button"
               variant="outline"
               size="sm"
-              className="shrink-0 gap-2 rounded-xl border-brand/40"
+              className="border-brand/40 shrink-0 gap-2 rounded-xl"
               disabled={isPortalLoading}
               onClick={onManageBilling}
             >

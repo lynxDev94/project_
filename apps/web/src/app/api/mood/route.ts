@@ -22,7 +22,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const days = Math.min(30, Math.max(7, Number(request.nextUrl.searchParams.get("days") || 7)));
+    const days = Math.min(
+      30,
+      Math.max(7, Number(request.nextUrl.searchParams.get("days") || 7)),
+    );
     const startDate = new Date();
     startDate.setUTCDate(startDate.getUTCDate() - (days - 1));
     startDate.setUTCHours(0, 0, 0, 0);
@@ -70,14 +73,20 @@ export async function GET(request: NextRequest) {
     const todayEntry = entries?.find((e) => e.entry_date === today);
 
     return NextResponse.json({
-      entries: (entries || []).map((e) => ({ date: e.entry_date, mood: e.mood_score })),
+      entries: (entries || []).map((e) => ({
+        date: e.entry_date,
+        mood: e.mood_score,
+      })),
       trend: { labels, points },
       submittedToday: !!todayEntry,
       todayMood: todayEntry?.mood_score ?? null,
     });
   } catch (err) {
     console.error("Mood GET error:", err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
@@ -99,7 +108,9 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const moodScore =
-      typeof body.moodScore === "number" ? body.moodScore : Number(body.moodScore);
+      typeof body.moodScore === "number"
+        ? body.moodScore
+        : Number(body.moodScore);
 
     if (Number.isNaN(moodScore) || moodScore < 1 || moodScore > 100) {
       return NextResponse.json(
@@ -118,7 +129,7 @@ export async function POST(request: NextRequest) {
           mood_score: Math.round(moodScore),
           entry_date: today,
         },
-        { onConflict: "user_id,entry_date", ignoreDuplicates: false }
+        { onConflict: "user_id,entry_date", ignoreDuplicates: false },
       )
       .select()
       .single();
@@ -134,6 +145,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, mood: data });
   } catch (err) {
     console.error("Mood POST error:", err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
