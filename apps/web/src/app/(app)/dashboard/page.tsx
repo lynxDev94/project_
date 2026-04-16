@@ -30,9 +30,16 @@ export default function DashboardPage() {
     user?.email?.split("@")[0] ||
     "there";
 
+  const archetypeLabel =
+    (user?.metadata as Record<string, any> | undefined)?.archetype?.label ??
+    null;
+
   return (
     <div className="font-sans text-slate-800">
-      <DashboardHeader greetingName={greetingName} />
+      <DashboardHeader
+        greetingName={greetingName}
+        archetypeLabel={archetypeLabel}
+      />
 
       <div className="mb-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
         <WelcomeCard

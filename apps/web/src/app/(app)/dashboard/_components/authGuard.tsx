@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthContext } from "@/providers/Auth";
+import { PendingArchetypeSync } from "@/components/pending-archetype-sync";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuthContext();
@@ -27,5 +28,10 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     return null;
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <PendingArchetypeSync />
+      {children}
+    </>
+  );
 }

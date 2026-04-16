@@ -13,6 +13,7 @@ export const config = {
     "/signup",
     "/forgot-password",
     "/reset-password",
+    "/archetype",
     "/api/:path*",
   ],
 };

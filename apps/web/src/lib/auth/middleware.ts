@@ -6,6 +6,7 @@ const NO_AUTH_PATHS = [
   "/signup",
   "/forgot-password",
   "/reset-password",
+  "/archetype",
   "/api/auth",
   "/api/webhooks/stripe",
 ];
