@@ -10,6 +10,7 @@ import Script from "next/script";
 import { PwaRegister } from "@/components/pwa-register";
 import { PwaInstallHelper } from "@/components/pwa-install-helper";
 import { PwaInstallProvider } from "@/providers/PwaInstall";
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -105,6 +106,7 @@ export default function RootLayout({
             </CreditsProvider>
           </AuthProvider>
         </ReactQueryProvider>
+        <Analytics />
       </body>
     </html>
   );
