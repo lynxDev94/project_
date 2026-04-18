@@ -32,7 +32,14 @@ export async function retrieveJungianContexts(
   }
 
   const rows = Array.isArray(data) ? data : [];
-  const contexts: JungianCitation[] = rows.map((item: any) => {
+  type RpcRow = {
+    id?: unknown;
+    content?: unknown;
+    source?: unknown;
+    chunk_index?: unknown;
+    similarity?: unknown;
+  };
+  const contexts: JungianCitation[] = rows.map((item: RpcRow) => {
     const previewText =
       typeof item.content === "string" ? item.content.trim() : "";
     return {

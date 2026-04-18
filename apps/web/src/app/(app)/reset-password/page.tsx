@@ -86,7 +86,6 @@ export default function ResetPasswordPage() {
           href="/signin"
           className="mb-10 flex items-center gap-2 transition-opacity hover:opacity-90"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/brandLogo.png"
             alt="Shadow Journal"

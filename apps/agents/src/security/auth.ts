@@ -19,8 +19,15 @@ const createOwnerFilter = (user: { identity: string }) => {
   return { owner: user.identity };
 };
 
+type CreatePayload = {
+  metadata?: Record<string, unknown> | null;
+};
+
 // Helper function for create operations that set metadata
-const createWithOwnerMetadata = (value: any, user: { identity: string }) => {
+const createWithOwnerMetadata = (
+  value: CreatePayload,
+  user: { identity: string },
+) => {
   if (isStudioUser(user.identity)) {
     return;
   }
@@ -75,9 +82,16 @@ export const auth = new Auth()
       if (!user) {
         throw new HTTPException(401, { message: "User not found" });
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
+      const msg =
+        e &&
+        typeof e === "object" &&
+        "message" in e &&
+        typeof (e as { message: unknown }).message === "string"
+          ? (e as { message: string }).message
+          : String(e);
       throw new HTTPException(401, {
-        message: `Authentication error: ${e.message}`,
+        message: `Authentication error: ${msg}`,
       });
     }
     return {

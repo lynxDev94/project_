@@ -36,10 +36,8 @@ export default tseslint.config(
         "warn",
         { args: "none", argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
-      ],
+      "react-refresh/only-export-components": "off",
+      "@next/next/no-img-element": "off",
     },
   },
 );

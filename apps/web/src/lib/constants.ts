@@ -1,1 +1,1 @@
-export const MIN_WORDS_FOR_ANALYSIS = 200;
+export const MIN_WORDS_FOR_ANALYSIS = 100;
