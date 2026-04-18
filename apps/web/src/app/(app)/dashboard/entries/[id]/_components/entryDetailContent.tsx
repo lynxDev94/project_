@@ -9,13 +9,13 @@ export function EntryDetailContent({
   onDeleteClick,
 }: EntryDetailContentProps) {
   return (
-    <div className="border-dashboard-stroke shadow-card-layered rounded-2xl border bg-white p-6 md:p-8">
+    <div className="border-dashboard-stroke shadow-card-layered min-w-0 max-w-full rounded-2xl border bg-white p-6 md:p-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-xs font-semibold tracking-wider text-slate-400 uppercase">
             {formatDateTime(entry.created_at)}
           </p>
-          <h1 className="font-headline mt-2 text-3xl font-bold text-slate-900 md:text-4xl">
+          <h1 className="font-headline mt-2 max-w-full break-words text-3xl font-bold text-slate-900 md:text-4xl">
             {entry.title || "Untitled reflection"}
           </h1>
         </div>
@@ -55,14 +55,14 @@ export function EntryDetailContent({
         </div>
       )}
 
-      <div className="prose prose-slate mt-8 max-w-none">
+      <div className="prose prose-slate mt-8 max-w-none min-w-0 [overflow-wrap:anywhere]">
         {(entry.body || "")
           .split("\n\n")
           .filter(Boolean)
           .map((paragraph, i) => (
             <p
               key={i}
-              className="mb-4 text-base leading-relaxed text-slate-700"
+              className="mb-4 max-w-full break-words text-base leading-relaxed text-slate-700"
             >
               {paragraph}
             </p>
