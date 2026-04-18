@@ -1,4 +1,4 @@
-const CACHE_NAME = "shadow-journal-v6";
+const CACHE_NAME = "shadow-journal-v7";
 const APP_SHELL = [
   "/",
   "/manifest.webmanifest",
@@ -31,6 +31,15 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+
+  const url = new URL(event.request.url);
+
+  // App APIs must always hit the network. Cache-first here caused stale mood
+  // charts, stats, etc. until a hard refresh cleared nothing useful anyway.
+  if (url.pathname.startsWith("/api/")) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request).then((cached) => {
