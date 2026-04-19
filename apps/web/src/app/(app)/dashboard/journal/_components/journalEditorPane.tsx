@@ -41,7 +41,7 @@ export function JournalEditorPane({
           placeholder="Untitled reflection"
           className="font-headline mb-3 w-full max-w-full pr-11 text-2xl font-semibold tracking-tight text-slate-900 placeholder:text-slate-300 focus:outline-none md:text-3xl"
         />
-        <p className="mb-5 text-sm text-slate-300 italic">
+        <p className="text-muted-foreground mb-5 text-sm italic">
           Begin your journey into the subconscious. Describe the dream, memory,
           or feeling that keeps returning to you.
         </p>
