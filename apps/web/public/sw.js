@@ -1,4 +1,4 @@
-const CACHE_NAME = "shadow-journal-v8";
+const CACHE_NAME = "shadow-journal-v9";
 const APP_SHELL = [
   "/",
   "/manifest.webmanifest",
@@ -6,6 +6,14 @@ const APP_SHELL = [
   "/icon-512.png",
   "/images/brandLogo.png",
 ];
+
+const STATIC_DESTINATIONS = new Set(["script", "style", "image", "font"]);
+
+function isStaticAssetRequest(request, url) {
+  if (url.pathname.startsWith("/_next/static/")) return true;
+  if (APP_SHELL.includes(url.pathname)) return true;
+  return STATIC_DESTINATIONS.has(request.destination);
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -33,10 +41,17 @@ self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
   const url = new URL(event.request.url);
+  const isSameOrigin = url.origin === self.location.origin;
 
-  // App APIs must always hit the network. Cache-first here caused stale mood
-  // charts, stats, etc. until a hard refresh cleared nothing useful anyway.
-  if (url.pathname.startsWith("/api/")) {
+  // Never cache app/document requests; stale cached HTML can trap users in
+  // old auth/redirect states (e.g. bouncing dashboard subpages to /dashboard).
+  if (!isSameOrigin || event.request.mode === "navigate" || url.pathname.startsWith("/api/")) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  // Cache-first only for static assets.
+  if (!isStaticAssetRequest(event.request, url)) {
     event.respondWith(fetch(event.request));
     return;
   }
