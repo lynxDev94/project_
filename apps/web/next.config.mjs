@@ -10,6 +10,7 @@ const csp = [
     isDev ? "'unsafe-eval'" : "",
     "https://js.stripe.com",
     "https://consent.cookiebot.com",
+    "https://consentcdn.cookiebot.com",
   ]
     .filter(Boolean)
     .join(" "),
@@ -23,13 +24,14 @@ const csp = [
     "https://api.stripe.com",
     "https://js.stripe.com",
     "https://consent.cookiebot.com",
+    "https://consentcdn.cookiebot.com",
     "http://localhost:2024",
     isDev ? "ws://localhost:3000" : "",
     isDev ? "wss://localhost:3000" : "",
   ]
     .filter(Boolean)
     .join(" "),
-  "frame-src https://js.stripe.com https://hooks.stripe.com",
+  "frame-src https://js.stripe.com https://hooks.stripe.com https://consent.cookiebot.com https://consentcdn.cookiebot.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

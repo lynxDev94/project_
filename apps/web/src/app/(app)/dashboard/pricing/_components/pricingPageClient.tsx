@@ -87,7 +87,11 @@ function PricingPageContent() {
       if (error) toast.error(error.message ?? "Checkout failed");
     } catch (error) {
       console.error(error);
-      toast.error("Failed to start checkout. Please try again.");
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to start checkout. Please try again.",
+      );
     } finally {
       setLoading(null);
     }
@@ -119,7 +123,11 @@ function PricingPageContent() {
       if (error) toast.error(error.message ?? "Checkout failed");
     } catch (error) {
       console.error(error);
-      toast.error("Failed to start checkout. Please try again.");
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to start checkout. Please try again.",
+      );
     } finally {
       setLoading(null);
     }
