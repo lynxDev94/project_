@@ -69,7 +69,6 @@ export function AuthProvider({
         // Get the current session
         const currentSession = await provider.getSession();
         setSession(currentSession);
-        console.log("[AuthProvider] currentSession", currentSession);
 
         // If we have a session, get the user
         if (currentSession?.user) {

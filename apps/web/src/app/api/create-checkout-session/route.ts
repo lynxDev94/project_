@@ -177,8 +177,23 @@ export async function POST(request: Request) {
     const session = await stripe.checkout.sessions.create(sessionParams);
 
     return NextResponse.json({ sessionId: session.id });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error creating checkout session:", error);
+
+    if (error instanceof Stripe.errors.StripeError) {
+      const status =
+        error.type === "StripeInvalidRequestError" ? 400 : 502;
+      return NextResponse.json(
+        {
+          error:
+            error.message || "Stripe error while creating checkout session",
+          code: error.code ?? null,
+          type: error.type,
+        },
+        { status },
+      );
+    }
+
     return NextResponse.json(
       { error: "Failed to create checkout session" },
       { status: 500 },
