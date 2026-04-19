@@ -1,4 +1,4 @@
-const CACHE_NAME = "shadow-journal-v9";
+const CACHE_NAME = "shadow-journal-v5";
 const APP_SHELL = [
   "/",
   "/manifest.webmanifest",
@@ -13,6 +13,10 @@ function isStaticAssetRequest(request, url) {
   if (url.pathname.startsWith("/_next/static/")) return true;
   if (APP_SHELL.includes(url.pathname)) return true;
   return STATIC_DESTINATIONS.has(request.destination);
+}
+
+function safeFetch(request) {
+  return fetch(request).catch(() => Response.error());
 }
 
 self.addEventListener("install", (event) => {
@@ -41,25 +45,30 @@ self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
   const url = new URL(event.request.url);
+  if (url.protocol !== "http:" && url.protocol !== "https:") return;
   const isSameOrigin = url.origin === self.location.origin;
 
   // Never cache app/document requests; stale cached HTML can trap users in
   // old auth/redirect states (e.g. bouncing dashboard subpages to /dashboard).
-  if (!isSameOrigin || event.request.mode === "navigate" || url.pathname.startsWith("/api/")) {
-    event.respondWith(fetch(event.request));
+  if (
+    !isSameOrigin ||
+    event.request.mode === "navigate" ||
+    url.pathname.startsWith("/api/")
+  ) {
+    event.respondWith(safeFetch(event.request));
     return;
   }
 
   // Cache-first only for static assets.
   if (!isStaticAssetRequest(event.request, url)) {
-    event.respondWith(fetch(event.request));
+    event.respondWith(safeFetch(event.request));
     return;
   }
 
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
-      return fetch(event.request).then((response) => {
+      return safeFetch(event.request).then((response) => {
         if (!response || response.status !== 200 || response.type !== "basic") {
           return response;
         }
