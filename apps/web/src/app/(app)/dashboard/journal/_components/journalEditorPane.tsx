@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Check, EyeOff, Lightbulb, PenLine, Sparkles, X } from "lucide-react";
+import { Check, Lightbulb, PenLine, Sparkles, X } from "lucide-react";
 import type { JournalEditorPaneProps } from "../types";
 
 export function JournalEditorPane({
@@ -24,7 +24,7 @@ export function JournalEditorPane({
   return (
     <div className="group border-dashboard-stroke shadow-card-layered flex min-h-[440px] flex-col overflow-hidden rounded-3xl border bg-white transition-shadow focus-within:shadow-[0_0_0_1px_rgba(108,43,238,0.15),0_4px_6px_-1px_rgba(0,0,0,0.05)]">
       <div className="relative flex-1 px-6 pt-6 pb-4 md:px-8 md:pt-7">
-        <div className="absolute top-6 right-4 flex items-center gap-1 md:right-6">
+        <div className="absolute top-6 right-4 md:right-6">
           <button
             type="button"
             onClick={onOpenPrompts}
@@ -33,22 +33,15 @@ export function JournalEditorPane({
           >
             <Lightbulb className="h-4 w-4" />
           </button>
-          <button
-            type="button"
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
-            aria-label="Private entry"
-          >
-            <EyeOff className="h-4 w-4" />
-          </button>
         </div>
         <input
           type="text"
           value={title}
           onChange={(e) => onTitleChange(e.target.value)}
           placeholder="Untitled reflection"
-          className="font-headline mb-3 w-[calc(100%-2rem)] pr-2 text-2xl font-semibold tracking-tight text-slate-900 placeholder:text-slate-300 focus:outline-none md:text-3xl"
+          className="font-headline mb-3 w-full max-w-full pr-11 text-2xl font-semibold tracking-tight text-slate-900 placeholder:text-slate-300 focus:outline-none md:text-3xl"
         />
-        <p className="mb-5 text-sm text-slate-400 italic">
+        <p className="mb-5 text-sm text-slate-300 italic">
           Begin your journey into the subconscious. Describe the dream, memory,
           or feeling that keeps returning to you.
         </p>

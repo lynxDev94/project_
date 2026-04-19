@@ -1,4 +1,4 @@
-const CACHE_NAME = "shadow-journal-v7";
+const CACHE_NAME = "shadow-journal-v8";
 const APP_SHELL = [
   "/",
   "/manifest.webmanifest",

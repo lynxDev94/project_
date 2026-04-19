@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,17 +16,24 @@ import {
 import { Trash2, UserX, BookOpen } from "lucide-react";
 import { useAuthContext } from "@/providers/Auth";
 import { deleteAccountData, deleteJournalData } from "./api";
+import { entriesKeys } from "../entries/queryKeys";
+import { dashboardKeys } from "../queryKeys";
 
 export default function SettingsPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { signOut } = useAuthContext();
   const [journalDialogOpen, setJournalDialogOpen] = useState(false);
   const [accountDialogOpen, setAccountDialogOpen] = useState(false);
 
   const deleteJournalMutation = useMutation({
     mutationFn: deleteJournalData,
-    onSuccess: () => {
+    onSuccess: async () => {
       setJournalDialogOpen(false);
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: entriesKeys.all }),
+        queryClient.invalidateQueries({ queryKey: dashboardKeys.all }),
+      ]);
       router.push("/dashboard");
       router.refresh();
     },

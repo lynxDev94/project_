@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { useCreditsContext } from "@/providers/Credits";
 import { countJournalWords } from "@/lib/journal-word-count";
 import { MIN_WORDS_FOR_ANALYSIS } from "@/lib/constants";
@@ -12,9 +13,12 @@ import {
 } from "../api";
 import type { JournalTag } from "../types";
 import type { JungianAnalysisResult } from "@/components/journal/AiAnalysisModal";
+import { entriesKeys } from "../../entries/queryKeys";
+import { dashboardKeys } from "../../queryKeys";
 
 export function useJournalEditor(editId: string | null) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const {
     credits,
     loading: creditsLoading,
@@ -147,8 +151,12 @@ export function useJournalEditor(editId: string | null) {
     });
     setActiveEntryId(savedId);
     lastSavedRef.current = { title, body, tags: tagLabels };
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: entriesKeys.all }),
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.all }),
+    ]);
     return savedId;
-  }, [activeEntryId, body, editId, tagLabels, title]);
+  }, [activeEntryId, body, editId, queryClient, tagLabels, title]);
 
   const handleSaveEntry = async () => {
     setSaveLoading(true);
