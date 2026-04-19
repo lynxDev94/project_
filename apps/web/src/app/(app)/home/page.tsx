@@ -1,32 +1,11 @@
-"use client";
-
-import {
-  Nav,
-  Features,
-  Hero,
-  Benefits,
-  Process,
-  Privacy,
-  Pricing,
-  Story,
-  FAQ,
-  Footer,
-} from "./_components";
+import { HomeClient } from "./_components/home-client";
+import { HomeJsonLd } from "./_components/home-json-ld";
 
 export default function Home() {
   return (
-    <div className="bg-background-dark fixed inset-0 overflow-y-auto font-sans text-slate-100">
-      <Nav />
-      <Hero />
-      <Benefits />
-      <Features />
-      {/* <JournalDemo /> */}
-      <Process />
-      <Pricing />
-      <Privacy />
-      <Story />
-      <FAQ />
-      <Footer />
-    </div>
+    <>
+      <HomeJsonLd />
+      <HomeClient />
+    </>
   );
 }
